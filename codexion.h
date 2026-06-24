@@ -32,4 +32,35 @@ typedef struct s_args
 } t_args;
 
 
+typedef struct s_coder
+{
+	int	id;
+	// pthread_t thread;
+	long last_comp_start;
+	int compile_count;
+
+} t_coder;
+
+
+typedef struct s_dongle
+{
+	// pthread_mutex_t mutex;
+	long last_released;
+	// queue (heap)
+
+} t_dongle;
+
+
+typedef struct s_simulation
+{
+	t_args args;
+	t_coder *coders;
+	t_dongle *dongles;
+	int stop;
+	// pthread_mutex_t print_mutex;
+	// pthread_t monitor;
+} t_sim;
+
+
+
 #endif
