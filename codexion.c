@@ -95,24 +95,3 @@ int	main(int argc, char **argv)
 	printf("%d", params.scheduler);
 	return (0);
 }
-
-
-/*
-	struct pqueue{
-	
-		t_waiter *waiters;
-		int hsize;
-		int size;
-	
-	}
-	
-	pqueue_push()
-	pqueue_bubble_up()
-
-	pqueue_pop()
-	pqueue_bubble_down()
-
-	pqueue_seek()
-
-
-*/
