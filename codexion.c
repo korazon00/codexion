@@ -24,6 +24,10 @@ int	main(int argc, char **argv)
 	if (!sim.coders)
 		return (1);
 
+	sim.dongles = malloc(sizeof(t_dongle) * params.number_of_dongles);
+	if (!sim.dongles)
+		return (1);
+	
 	sim.start_time = get_time_ms();
 	init_coders(&sim);
 

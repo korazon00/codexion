@@ -12,3 +12,14 @@
 
 #include "codexion.h"
 
+void	init_mutex(t_sim	*sim)
+{
+	int	i;
+
+	i = 0;
+	while (i < sim->args.number_of_dongles)
+	{
+		pthread_mutex_init()
+	}
+	
+}

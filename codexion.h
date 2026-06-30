@@ -83,4 +83,6 @@ void	log_state(t_sim	*sim, int coder_id, char *msg);
 long	timestamp(t_sim *sim);
 long	get_time_ms(void);
 
+//dongles
+void	init_mutex(t_sim	*sim);
 #endif

@@ -69,6 +69,7 @@ int	parse_args(int argc, char **argv, t_args *p)
 	if (strcmp(argv[8], "fifo") != 0 && strcmp(argv[8], "edf") != 0)
 		return (0);
 	p->number_of_coders = atoi(argv[1]);
+	p->number_of_dongles = atoi(argv[1]);
 	p->time_to_burnout = atoi(argv[2]);
 	p->time_to_compile = atoi(argv[3]);
 	p->time_to_debug = atoi(argv[4]);
