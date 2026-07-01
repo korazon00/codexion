@@ -38,6 +38,7 @@ typedef struct s_args
 
 typedef struct s_dongle
 {
+	int	id;
 	pthread_mutex_t mutex;
 	long last_released;
 	// queue (heap)
@@ -50,8 +51,8 @@ typedef struct s_coder
 	pthread_t thread;
 	long last_comp_start;
 	int compile_count;
-	t_dongle	*left;
-	t_dongle	*right;
+	t_dongle	left;
+	t_dongle	right;
 	pthread_mutex_t	mtx;
 	struct s_simulation *sim;
 } t_coder;
@@ -84,5 +85,6 @@ long	timestamp(t_sim *sim);
 long	get_time_ms(void);
 
 //dongles
+void	init_dongles(t_sim *sim);
 void	init_mutex(t_sim	*sim);
 #endif
