@@ -26,10 +26,14 @@ void *coder_routine(void *arg)
 	while (!sim->stop)
 	{
 		//compiling
+		take_dongles(coder);
+
 		coder->last_comp_start = get_time_ms();
 		log_state(sim, coder->id, "is compiling");
 		usleep(sim->args.time_to_compile * 1000);
 		coder->compile_count ++;
+
+		release_dongles(coder);
 
 		//debuging
 		log_state(sim, coder->id, "is debuging");

@@ -51,8 +51,8 @@ typedef struct s_coder
 	pthread_t thread;
 	long last_comp_start;
 	int compile_count;
-	t_dongle	left;
-	t_dongle	right;
+	int	left;
+	int	right;
 	pthread_mutex_t	mtx;
 	struct s_simulation *sim;
 } t_coder;
@@ -87,4 +87,6 @@ long	get_time_ms(void);
 //dongles
 void	init_dongles(t_sim *sim);
 void	init_mutex(t_sim	*sim);
+void	take_dongles(t_coder *coder);
+void	release_dongles(t_coder *coder);
 #endif
