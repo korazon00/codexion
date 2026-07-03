@@ -64,7 +64,7 @@ typedef struct s_simulation
 	t_dongle *dongles;
 	long	start_time;
 	int stop;
-	pthread_mutex_t print_mutex;
+	pthread_mutex_t sim_mutex;
 	pthread_t monitor;
 } t_sim;
 

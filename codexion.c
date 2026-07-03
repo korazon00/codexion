@@ -21,22 +21,25 @@ int	main(int argc, char **argv)
 		return (1);
 
 	sim.coders = malloc(sizeof(t_coder) * params.number_of_coders);
-	if (!sim.coders)
-		return (1);
-
 	sim.dongles = malloc(sizeof(t_dongle) * params.number_of_dongles);
-	if (!sim.dongles)
+	if (!sim.coders || !sim.dongles)
 		return (1);
 	
+	sim.stop = 0;
 	sim.start_time = get_time_ms();
+
+	pthread_mutex_init(&sim.sim_mutex, NULL);
+
+	init_mutex(&sim);
+	init_dongles(&sim);
 	init_coders(&sim);
 
-	// printf("%d\n", params.number_of_coders);
-	// printf("%d\n", params.time_to_burnout);
-	// printf("%d\n", params.time_to_compile);
-	// printf("%d\n", params.time_to_debug);
-	// printf("%d\n", params.number_of_compiles_required);
-	// printf("%d\n", params.dongle_cooldown);
-	// printf("%d", params.scheduler);
+	pthread_create(&sim.monitor, NULL, monitor_routine, &sim);
+	pthread_join(&sim.monitor, NULL);
+	join_threads(&sim);
+
+	pthread_mutex_destroy(&sim.sim_mutex);
+	free(sim.coders);
+	free(sim.dongles);
 	return (0);
 }

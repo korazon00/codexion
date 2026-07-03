@@ -14,22 +14,20 @@
 
 void	*monitor_routine(void *arg)
 {
-	t_coder	*monitor;
 	t_sim	*sim;
 	long	now;
 	int		i;
 
-	monitor = (t_coder *)arg;
-	sim = monitor->sim;
-	now = get_time_ms();
+	sim = (t_sim *)arg;
 	while (!sim->stop)
 	{
 		i = 0;
 		while (i < sim->args.number_of_coders)
 		{
+			now = get_time_ms();
 			if (now - sim->coders[i].last_comp_start > sim->args.time_to_burnout)
 			{
-				log_state(&sim, &sim->coders[i], "burned out");
+				log_state(sim, sim->coders[i].id, "burned out");
 				sim->stop = 1;
 				return NULL;
 			}
@@ -37,4 +35,5 @@ void	*monitor_routine(void *arg)
 		}
 		usleep(1000);
 	}
+	return NULL;
 }
