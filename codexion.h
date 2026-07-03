@@ -89,4 +89,8 @@ void	init_dongles(t_sim *sim);
 void	init_mutex(t_sim	*sim);
 void	take_dongles(t_coder *coder);
 void	release_dongles(t_coder *coder);
+
+//monitor
+void	*monitor_routine(void *arg);
+
 #endif
