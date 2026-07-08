@@ -18,23 +18,23 @@
 
 void bubbledown(t_waiter heap[], int size, int i)
 {
-	int	smalleast;
+	int	smallest;
 	int	left;
 	int	right;
 
 	while (1)
 	{
-		smalleast = i;
+		smallest = i;
 		left = i * 2 + 1;
 		right = i * 2 + 2;
-		if (left < size && heap[smalleast].spawn_time > heap[left].spawn_time)
-			smalleast = left;
-		if (right < size && heap[smalleast].spawn_time > heap[right].spawn_time)
-			smalleast = right;
-		if (smalleast == i)
+		if (left < size && heap[smallest].priority > heap[left].priority)
+			smallest = left;
+		if (right < size && heap[smallest].priority > heap[right].priority)
+			smallest = right;
+		if (smallest == i)
 			break;
-		swap(&heap[i], &heap[smalleast]);
-		i = smalleast;
+		swap(&heap[i], &heap[smallest]);
+		i = smallest;
 	}
 }
 
@@ -55,10 +55,8 @@ void	push(t_waiter heap[], int *size, t_waiter coder)
 
 t_waiter	pop(t_waiter heap[], int *size)
 {
-	int			i;
 	t_waiter	min;
 
-	i = 0;
     if (*size == 0)
     {
         min.coder_id = -1;

@@ -40,7 +40,11 @@ typedef struct s_args
 typedef struct s_waiter
 {
 	int coder_id;
-	long long spawn_time; //edf : deadline // fifo: arrival time 
+	long long spawn_time;
+	long long priority;
+	// fifo: waiter.spawn_time = get_time_ms()
+	//		waiter.spawn_time = waiter.spawn_time
+	//edf:priority = spawn_time + time_to_burnout
 
 } t_waiter;
 
