@@ -34,14 +34,28 @@ typedef struct s_args
     int scheduler;
 	//
 	int number_of_dongles;
+
 } t_args;
+
+typedef struct s_waiter
+{
+	int coder_id;
+	long long spawn_time; //edf : deadline // fifo: arrival time 
+
+} t_waiter;
+
+typedef struct s_heap
+{
+	t_waiter waiters[2];
+	int size;
+} t_heap;
 
 typedef struct s_dongle
 {
 	int	id;
 	pthread_mutex_t mutex;
 	long last_released;
-	// queue (heap)
+	t_heap	*waiters;
 
 } t_dongle;
 
@@ -64,7 +78,7 @@ typedef struct s_simulation
 	t_dongle *dongles;
 	long	start_time;
 	int stop;
-	pthread_mutex_t sim_mutex;
+	pthread_mutex_t print_mutex;
 	pthread_t monitor;
 } t_sim;
 
@@ -92,5 +106,11 @@ void	release_dongles(t_coder *coder);
 
 //monitor
 void	*monitor_routine(void *arg);
+
+//heap
+void bubbledown(int heap[], int size, int i);
+void	push(int heap[], int *size, int value);
+int	pop(int heap[], int *size);
+void	swap(int *a, int *b);
 
 #endif

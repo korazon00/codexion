@@ -28,17 +28,17 @@ int	main(int argc, char **argv)
 	sim.stop = 0;
 	sim.start_time = get_time_ms();
 
-	pthread_mutex_init(&sim.sim_mutex, NULL);
+	pthread_mutex_init(&sim.print_mutex, NULL);
 
 	init_mutex(&sim);
 	init_dongles(&sim);
 	init_coders(&sim);
 
 	pthread_create(&sim.monitor, NULL, monitor_routine, &sim);
-	pthread_join(&sim.monitor, NULL);
+	pthread_join(sim.monitor, NULL);
 	join_threads(&sim);
 
-	pthread_mutex_destroy(&sim.sim_mutex);
+	pthread_mutex_destroy(&sim.print_mutex);
 	free(sim.coders);
 	free(sim.dongles);
 	return (0);
