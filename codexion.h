@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   codexion.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: faeljedd <faeljedd@student.42.fr>          #+#  +:+       +#+        */
+/*   By: faeljedd <faeljedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026-06-17 21:16:21 by faeljedd          #+#    #+#             */
-/*   Updated: 2026-06-17 21:16:21 by faeljedd         ###   ########.fr       */
+/*   Created: 2026/06/17 21:16:21 by faeljedd          #+#    #+#             */
+/*   Updated: 2026/07/11 12:12:19 by faeljedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,29 +37,34 @@ typedef struct s_args
 
 } t_args;
 
-typedef struct s_waiter
-{
-	int coder_id;
-	long long spawn_time;
-	long long priority;
-	// fifo: waiter.spawn_time = get_time_ms()
-	//		waiter.spawn_time = waiter.spawn_time
-	//edf:priority = spawn_time + time_to_burnout
+// typedef struct s_waiter
+// {
+// 	int coder_id;
+// 	// long long spawn_time;
+// 	// long long deadline;
+// 	long long priority;
+// 	// fifo: waiter.spawn_time = get_time_ms()
+// 	//		waiter.priority = waiter.spawn_time
+// 	//edf:priority = last_comp_start + time_to_burnout
+// 	//edf: waiter.deadline = coder.last_comp_start + sim->args.time_to_burnout;
+// 	// waiter.proirity = waiter.deadline
 
-} t_waiter;
+// } t_waiter;
 
 typedef struct s_heap
 {
-	t_waiter waiters[2];
+	t_coder waiters[2];
 	int size;
 } t_heap;
 
 typedef struct s_dongle
 {
 	int	id;
+	pthread_cond_t cond;
 	pthread_mutex_t mutex;
 	long last_released;
 	t_heap	*waiters;
+	int is_available;
 
 } t_dongle;
 
@@ -73,6 +78,7 @@ typedef struct s_coder
 	int	right;
 	pthread_mutex_t	mtx;
 	struct s_simulation *sim;
+	long long priority;
 } t_coder;
 
 typedef struct s_simulation
@@ -112,9 +118,9 @@ void	release_dongles(t_coder *coder);
 void	*monitor_routine(void *arg);
 
 //heap
-void bubbledown(int heap[], int size, int i);
-void	push(int heap[], int *size, int value);
-int	pop(int heap[], int *size);
-void	swap(int *a, int *b);
+void bubbledown(t_coder heap[], int size, int i);
+void	push(t_coder heap[], int *size, t_coder coder);
+t_coder	pop(t_coder heap[], int *size);
+void	swap(t_coder *a, t_coder *b);
 
 #endif

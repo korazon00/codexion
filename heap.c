@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heap.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: faeljedd <faeljedd@student.42.fr>          #+#  +:+       +#+        */
+/*   By: faeljedd <faeljedd@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026-07-05 14:43:13 by faeljedd          #+#    #+#             */
-/*   Updated: 2026-07-05 14:43:13 by faeljedd         ###   ########.fr       */
+/*   Created: 2026/07/05 14:43:13 by faeljedd          #+#    #+#             */
+/*   Updated: 2026/07/11 12:18:46 by faeljedd         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 // left == i * 2 + 1
 // right == i * 2 + 2
 
-void bubbledown(t_waiter heap[], int size, int i)
+void bubbledown(t_coder heap[], int size, int i)
 {
 	int	smallest;
 	int	left;
@@ -38,7 +38,7 @@ void bubbledown(t_waiter heap[], int size, int i)
 	}
 }
 
-void	push(t_waiter heap[], int *size, t_waiter coder)
+void	push(t_coder heap[], int *size, t_coder coder)
 {
 	int	i;
 
@@ -46,21 +46,21 @@ void	push(t_waiter heap[], int *size, t_waiter coder)
 	i = *size;
 	(*size)++;
 
-	while (i > 0 && heap[(i - 1) / 2].spawn_time > heap[i].spawn_time)
+	while (i > 0 && heap[(i - 1) / 2].priority > heap[i].priority)
 	{
 		swap(&heap[i], &heap[(i - 1) / 2]);
 		i = (i - 1) / 2;
 	}
 }
 
-t_waiter	pop(t_waiter heap[], int *size)
+t_coder	pop(t_coder heap[], int *size)
 {
-	t_waiter	min;
+	t_coder	min;
 
     if (*size == 0)
     {
-        min.coder_id = -1;
-        min.spawn_time = 0;
+        min.id = -1;
+        min.priority = 0;
         return (min);
     }
 	min = heap[0];
@@ -70,9 +70,9 @@ t_waiter	pop(t_waiter heap[], int *size)
 	return (min);
 }
 
-void	swap(t_waiter *a, t_waiter *b)
+void	swap(t_coder *a, t_coder *b)
 {
-	t_waiter	tmp;
+	t_coder	tmp;
 
 	tmp = *a;
 	*a = *b;
