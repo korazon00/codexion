@@ -86,19 +86,19 @@ void	release_dongles(t_coder *coder)
 
 void	coder_request(t_coder *coder)
 {
-	t_dongle	left;
-	t_dongle	right;
+	t_dongle	*left;
+	t_dongle	*right;
 
-	left = coder->sim->dongles[coder->left];
-	right = coder->sim->dongles[coder->right];
+	left = &coder->sim->dongles[coder->left];
+	right = &coder->sim->dongles[coder->right];
 
 	if (coder->sim->args.scheduler == 1)
 		coder->priority = get_time_ms();
 	else
 		coder->priority = coder->last_comp_start + coder->sim->args.time_to_burnout;
 	
-	push(left.waiters->waiters, left.waiters->size, *coder);
-	push(right.waiters->waiters, right.waiters->size, *coder);
+	push(left->waiters->waiters, &left->waiters->size, *coder);
+	push(right->waiters->waiters, &right->waiters->size, *coder);
 }
 
 int	dongle_available(t_dongle *dongle, int cooldonw, long now)
