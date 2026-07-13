@@ -53,7 +53,7 @@ typedef struct s_args
 
 typedef struct s_heap
 {
-	t_coder waiters[2];
+	t_coder *waiters[2];
 	int size;
 } t_heap;
 
@@ -113,6 +113,7 @@ void	init_dongles(t_sim *sim);
 void	init_mutex(t_sim	*sim);
 void	take_dongles(t_coder *coder);
 void	release_dongles(t_coder *coder);
+void	coder_request(t_coder *coder);
 
 //monitor
 void	*monitor_routine(void *arg);

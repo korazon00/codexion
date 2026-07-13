@@ -43,16 +43,18 @@ void	take_dongles(t_coder *coder)
 	t_sim	*sim;
 	int		first;
 	int		second;
+	long long	now;
 
 	coder_request(coder);
+	now = get_time_ms();
 	sim = coder->sim;
 	first = coder->left < coder->right ? coder->left : coder->right;
 	second = coder->left < coder->right ? coder->right : coder->left;
 	if (&sim->dongles[first].waiters->waiters[0] == coder 
-		&& &sim->dongles[first].is_available)
+		&& dongle_available(&sim->dongles[first], sim->args.dongle_cooldown, now))
 	{
 		if (&sim->dongles[second].waiters->waiters[0] == coder 
-		&& &sim->dongles[second].is_available)
+		&& dongle_available(&sim->dongles[second], sim->args.dongle_cooldown, now))
 		{
 			sim->dongles[first].is_available = 0;
 			pthread_mutex_lock(&sim->dongles[first].mutex);
@@ -70,9 +72,14 @@ void	release_dongles(t_coder *coder)
 	t_sim	*sim;
 
 	sim = coder->sim;
+	//first_dongle
 	pthread_mutex_unlock(&sim->dongles[coder->left].mutex);
-	pthread_mutex_unlock(&sim->dongles[coder->right].mutex);
+	sim->dongles[coder->left].last_released = get_time_ms();
 	sim->dongles[coder->left].is_available = 1;
+
+	//second_dongle
+	pthread_mutex_unlock(&sim->dongles[coder->right].mutex);
+	sim->dongles[coder->right].last_released = get_time_ms();
 	sim->dongles[coder->right].is_available = 1;
 
 }
@@ -92,4 +99,13 @@ void	coder_request(t_coder *coder)
 	
 	push(left.waiters->waiters, left.waiters->size, *coder);
 	push(right.waiters->waiters, right.waiters->size, *coder);
+}
+
+int	dongle_available(t_dongle *dongle, int cooldonw, long now)
+{
+	if (!dongle->is_available)
+		return (0);
+	if (now - dongle->last_released < cooldonw)
+		return (0);
+	return (1);
 }

@@ -38,7 +38,7 @@ void bubbledown(t_coder heap[], int size, int i)
 	}
 }
 
-void	push(t_coder heap[], int *size, t_coder coder)
+void	push(t_coder *heap[], int *size, t_coder *coder)
 {
 	int	i;
 
@@ -46,7 +46,7 @@ void	push(t_coder heap[], int *size, t_coder coder)
 	i = *size;
 	(*size)++;
 
-	while (i > 0 && heap[(i - 1) / 2].priority > heap[i].priority)
+	while (i > 0 && heap[(i - 1) / 2]->priority > heap[i]->priority)
 	{
 		swap(&heap[i], &heap[(i - 1) / 2]);
 		i = (i - 1) / 2;
