@@ -16,7 +16,7 @@
 // left == i * 2 + 1
 // right == i * 2 + 2
 
-void bubbledown(t_coder heap[], int size, int i)
+void bubbledown(t_coder *heap[], int size, int i)
 {
 	int	smallest;
 	int	left;
@@ -27,9 +27,9 @@ void bubbledown(t_coder heap[], int size, int i)
 		smallest = i;
 		left = i * 2 + 1;
 		right = i * 2 + 2;
-		if (left < size && heap[smallest].priority > heap[left].priority)
+		if (left < size && heap[smallest]->priority > heap[left]->priority)
 			smallest = left;
-		if (right < size && heap[smallest].priority > heap[right].priority)
+		if (right < size && heap[smallest]->priority > heap[right]->priority)
 			smallest = right;
 		if (smallest == i)
 			break;
@@ -53,14 +53,14 @@ void	push(t_coder *heap[], int *size, t_coder *coder)
 	}
 }
 
-t_coder	pop(t_coder heap[], int *size)
+t_coder	*pop(t_coder *heap[], int *size)
 {
-	t_coder	min;
+	t_coder	*min;
 
     if (*size == 0)
     {
-        min.id = -1;
-        min.priority = 0;
+        min->id = -1;
+        min->priority = 0;
         return (min);
     }
 	min = heap[0];

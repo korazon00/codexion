@@ -88,7 +88,8 @@ typedef struct s_simulation
 	t_dongle *dongles;
 	long	start_time;
 	int stop;
-	pthread_mutex_t print_mutex;
+	pthread_cond_t cond;
+	pthread_mutex_t sim_mtx;
 	pthread_t monitor;
 } t_sim;
 
@@ -119,9 +120,9 @@ void	coder_request(t_coder *coder);
 void	*monitor_routine(void *arg);
 
 //heap
-void bubbledown(t_coder heap[], int size, int i);
-void	push(t_coder heap[], int *size, t_coder coder);
-t_coder	pop(t_coder heap[], int *size);
+void bubbledown(t_coder *heap[], int size, int i);
+void	push(t_coder *heap[], int *size, t_coder coder);
+t_coder	pop(t_coder *heap[], int *size);
 void	swap(t_coder *a, t_coder *b);
 
 #endif

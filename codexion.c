@@ -28,7 +28,7 @@ int	main(int argc, char **argv)
 	sim.stop = 0;
 	sim.start_time = get_time_ms();
 
-	pthread_mutex_init(&sim.print_mutex, NULL);
+	pthread_mutex_init(&sim.sim_mtx, NULL);
 
 	init_mutex(&sim);
 	init_dongles(&sim);
@@ -38,7 +38,7 @@ int	main(int argc, char **argv)
 	pthread_join(sim.monitor, NULL);
 	join_threads(&sim);
 
-	pthread_mutex_destroy(&sim.print_mutex);
+	pthread_mutex_destroy(&sim.sim_mtx);
 	free(sim.coders);
 	free(sim.dongles);
 	return (0);
