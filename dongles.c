@@ -35,6 +35,8 @@ void	init_mutex(t_sim *sim)
 		pthread_mutex_init(&sim->dongles[i].mutex, NULL);
 		sim->dongles[i].last_released = 0;
 		sim->dongles[i].is_available = 1;
+		sim->dongles[i].waiters = malloc(sizeof(t_heap));
+		sim->dongles[i].waiters->size = 0;
 		i++;
 	}
 }
@@ -49,23 +51,23 @@ void	take_dongles(t_coder *coder)
 	sim = coder->sim;
 	first = coder->left < coder->right ? coder->left : coder->right;
 	second = coder->left < coder->right ? coder->right : coder->left;
-	coder_request(coder);
 	pthread_mutex_lock(&sim->sim_mtx);
+	coder_request(coder);
 	while(1)
 	{
 		now = get_time_ms();
-		if (&sim->dongles[first].waiters->waiters[0] == coder
+		if (sim->dongles[first].waiters->waiters[0] == coder
 			&& dongle_available(&sim->dongles[first], sim->args.dongle_cooldown, now))
 		{
-			if (&sim->dongles[second].waiters->waiters[0] == coder 
+			if (sim->dongles[second].waiters->waiters[0] == coder 
 			&& dongle_available(&sim->dongles[second], sim->args.dongle_cooldown, now))
 			{
-				pop(&sim->dongles[first].waiters->waiters, &sim->dongles[first].waiters->size);
+				pop(sim->dongles[first].waiters->waiters, &sim->dongles[first].waiters->size);
 				sim->dongles[first].is_available = 0;
 				pthread_mutex_lock(&sim->dongles[first].mutex);
 				log_state(sim, coder->id, "has taken a dongle");
 
-				pop(&sim->dongles[second].waiters->waiters, &sim->dongles[second].waiters->size);
+				pop(sim->dongles[second].waiters->waiters, &sim->dongles[second].waiters->size);
 				sim->dongles[second].is_available = 0;
 				pthread_mutex_lock(&sim->dongles[second].mutex);
 				log_state(sim, coder->id, "has taken a dongle");
@@ -110,8 +112,8 @@ void	coder_request(t_coder *coder)
 	else
 		coder->priority = coder->last_comp_start + coder->sim->args.time_to_burnout;
 	
-	push(left->waiters->waiters, &left->waiters->size, *coder);
-	push(right->waiters->waiters, &right->waiters->size, *coder);
+	push(left->waiters->waiters, &left->waiters->size, coder);
+	push(right->waiters->waiters, &right->waiters->size, coder);
 }
 
 int	dongle_available(t_dongle *dongle, int cooldonw, long now)

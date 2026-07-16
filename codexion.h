@@ -121,7 +121,7 @@ void	*monitor_routine(void *arg);
 
 //heap
 void bubbledown(t_coder *heap[], int size, int i);
-void	push(t_coder *heap[], int *size, t_coder coder);
+void	push(t_coder *heap[], int *size, t_coder *coder);
 t_coder	pop(t_coder *heap[], int *size);
 void	swap(t_coder *a, t_coder *b);
 
