@@ -27,8 +27,11 @@ void	*monitor_routine(void *arg)
 			now = get_time_ms();
 			if (now - sim->coders[i].last_comp_start > sim->args.time_to_burnout)
 			{
+				pthread_mutex_lock(&sim->sim_mtx);
 				log_state(sim, sim->coders[i].id, "burned out");
 				sim->stop = 1;
+				pthread_cond_broadcast(&sim->cond);
+				pthread_mutex_unlock(&sim->sim_mtx);
 				return NULL;
 			}
 			i++;

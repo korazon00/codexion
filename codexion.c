@@ -25,10 +25,12 @@ int	main(int argc, char **argv)
 	if (!sim.coders || !sim.dongles)
 		return (1);
 	
+	sim.args = params;
 	sim.stop = 0;
 	sim.start_time = get_time_ms();
 
 	pthread_mutex_init(&sim.sim_mtx, NULL);
+	pthread_cond_init(&sim.cond, NULL);
 
 	init_mutex(&sim);
 	init_dongles(&sim);
@@ -39,6 +41,7 @@ int	main(int argc, char **argv)
 	join_threads(&sim);
 
 	pthread_mutex_destroy(&sim.sim_mtx);
+	pthread_cond_destroy(&sim.cond);
 	free(sim.coders);
 	free(sim.dongles);
 	return (0);

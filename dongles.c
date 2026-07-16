@@ -85,6 +85,8 @@ void	release_dongles(t_coder *coder)
 	t_sim	*sim;
 
 	sim = coder->sim;
+	pthread_mutex_lock(&sim->sim_mtx);
+
 	//first_dongle
 	pthread_mutex_unlock(&sim->dongles[coder->left].mutex);
 	sim->dongles[coder->left].last_released = get_time_ms();
@@ -96,7 +98,7 @@ void	release_dongles(t_coder *coder)
 	sim->dongles[coder->right].is_available = 1;
 
 	pthread_cond_broadcast(&sim->cond);
-
+	pthread_mutex_unlock(&sim->sim_mtx);
 }
 
 void	coder_request(t_coder *coder)

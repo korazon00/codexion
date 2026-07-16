@@ -27,8 +27,8 @@ long	timestamp(t_sim *sim)
 
 void	log_state(t_sim	*sim, int coder_id, char *msg)
 {
-	pthread_mutex_lock(&sim->sim_mtx);
+	pthread_mutex_lock(&sim->print_mtx);
 	if (!sim -> stop)
 		printf("%ld %d %s\n", timestamp(sim), coder_id, msg);
-	pthread_mutex_unlock(&sim->sim_mtx);
+	pthread_mutex_unlock(&sim->print_mtx);
 }

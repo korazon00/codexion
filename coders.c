@@ -57,6 +57,7 @@ int init_coders(t_sim *sim)
 		sim->coders[i].id = i + 1;
 		sim->coders[i].compile_count = 0;
 		sim->coders[i].sim = sim;
+		sim->coders[i].last_comp_start = sim->start_time;
 
 		if (pthread_create(
 			&sim->coders[i].thread,

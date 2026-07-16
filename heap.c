@@ -61,7 +61,7 @@ t_coder	*pop(t_coder *heap[], int *size)
     {
         min->id = -1;
         min->priority = 0;
-        return (min);
+        return NULL;
     }
 	min = heap[0];
 	heap[0] = heap[*size - 1];
@@ -70,9 +70,9 @@ t_coder	*pop(t_coder *heap[], int *size)
 	return (min);
 }
 
-void	swap(t_coder *a, t_coder *b)
+void	swap(t_coder **a, t_coder **b)
 {
-	t_coder	tmp;
+	t_coder	*tmp;
 
 	tmp = *a;
 	*a = *b;
