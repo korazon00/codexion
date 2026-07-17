@@ -36,7 +36,25 @@ void	*monitor_routine(void *arg)
 			}
 			i++;
 		}
+		if (comp_finished(&sim))
+		{
+			sim->stop = 1;
+		}
 		usleep(1000);
 	}
 	return NULL;
+}
+
+int	comp_finished(t_sim *sim)
+{
+	int	i;
+
+	i = 0;
+	while (i < sim->args.number_of_coders)
+	{
+		if (sim->coders[i].compile_count < sim->args.number_of_compiles_required)
+			return (0);
+		i++;
+	}
+	return (1);
 }

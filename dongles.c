@@ -73,8 +73,8 @@ void	take_dongles(t_coder *coder)
 				log_state(sim, coder->id, "has taken a dongle");
 
 				pthread_mutex_unlock(&sim->sim_mtx);
+				return;
 			}
-			return;
 		}
 		pthread_cond_wait(&sim->cond, &sim->sim_mtx);
 	}
