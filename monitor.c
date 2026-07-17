@@ -32,17 +32,21 @@ void	*monitor_routine(void *arg)
 				sim->stop = 1;
 				pthread_cond_broadcast(&sim->cond);
 				pthread_mutex_unlock(&sim->sim_mtx);
-				return NULL;
+				return (NULL);
 			}
 			i++;
 		}
 		if (comp_finished(&sim))
 		{
+			pthread_mutex_lock(&sim->sim_mtx);
 			sim->stop = 1;
+			pthread_cond_broadcast(&sim->cond);
+			pthread_mutex_unlock(&sim->sim_mtx);
+			return (NULL);
 		}
 		usleep(1000);
 	}
-	return NULL;
+	return (NULL);
 }
 
 int	comp_finished(t_sim *sim)
@@ -52,9 +56,14 @@ int	comp_finished(t_sim *sim)
 	i = 0;
 	while (i < sim->args.number_of_coders)
 	{
+		pthread_mutex_lock(&sim->sim_mtx);
 		if (sim->coders[i].compile_count < sim->args.number_of_compiles_required)
+		{
+			pthread_mutex_unlock(&sim->sim_mtx);
 			return (0);
+		}
 		i++;
 	}
+	pthread_mutex_unlock(&sim->sim_mtx);
 	return (1);
 }
