@@ -12,6 +12,25 @@
 
 #include "codexion.h"
 
+int	comp_finished(t_sim *sim)
+{
+	int	i;
+
+	pthread_mutex_lock(&sim->sim_mtx);
+	i = 0;
+	while (i < sim->args.number_of_coders)
+	{
+		if (sim->coders[i].compile_count < sim->args.number_of_compiles_required)
+		{
+			pthread_mutex_unlock(&sim->sim_mtx);
+			return (0);
+		}
+		i++;
+	}
+	pthread_mutex_unlock(&sim->sim_mtx);
+	return (1);
+}
+
 void	*monitor_routine(void *arg)
 {
 	t_sim	*sim;
@@ -36,7 +55,7 @@ void	*monitor_routine(void *arg)
 			}
 			i++;
 		}
-		if (comp_finished(&sim))
+		if (comp_finished(sim))
 		{
 			pthread_mutex_lock(&sim->sim_mtx);
 			sim->stop = 1;
@@ -47,23 +66,4 @@ void	*monitor_routine(void *arg)
 		usleep(1000);
 	}
 	return (NULL);
-}
-
-int	comp_finished(t_sim *sim)
-{
-	int	i;
-
-	i = 0;
-	while (i < sim->args.number_of_coders)
-	{
-		pthread_mutex_lock(&sim->sim_mtx);
-		if (sim->coders[i].compile_count < sim->args.number_of_compiles_required)
-		{
-			pthread_mutex_unlock(&sim->sim_mtx);
-			return (0);
-		}
-		i++;
-	}
-	pthread_mutex_unlock(&sim->sim_mtx);
-	return (1);
 }

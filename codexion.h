@@ -51,23 +51,6 @@ typedef struct s_args
 
 // } t_waiter;
 
-typedef struct s_heap
-{
-	t_coder *waiters[2];
-	int size;
-} t_heap;
-
-typedef struct s_dongle
-{
-	int	id;
-	pthread_cond_t cond;
-	pthread_mutex_t mutex;
-	long last_released;
-	t_heap	*waiters;
-	int is_available;
-
-} t_dongle;
-
 typedef struct s_coder
 {
 	int	id;
@@ -80,6 +63,24 @@ typedef struct s_coder
 	struct s_simulation *sim;
 	long long priority;
 } t_coder;
+
+typedef struct s_heap
+{
+	t_coder *waiters[2];
+	int size;
+	
+} t_heap;
+
+typedef struct s_dongle
+{
+	int	id;
+	pthread_cond_t cond;
+	pthread_mutex_t mutex;
+	long last_released;
+	t_heap	*waiters;
+	int is_available;
+	
+} t_dongle;
 
 typedef struct s_simulation
 {

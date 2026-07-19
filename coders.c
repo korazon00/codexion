@@ -55,9 +55,12 @@ int init_coders(t_sim *sim)
 	while (i < sim->args.number_of_coders)
 	{
 		sim->coders[i].id = i + 1;
+		sim->dongles[i].id = i;
 		sim->coders[i].compile_count = 0;
 		sim->coders[i].sim = sim;
 		sim->coders[i].last_comp_start = sim->start_time;
+		sim->coders[i].left = sim->coders[i].id - 1;
+		sim->coders[i].right = sim->coders[i].id % sim->args.number_of_coders;
 
 		if (pthread_create(
 			&sim->coders[i].thread,
@@ -67,7 +70,7 @@ int init_coders(t_sim *sim)
 			return 1;
 		i++;
 	}
-	return 0;
+		return 0;
 }
 
 int	join_threads(t_sim	*sim)

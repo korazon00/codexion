@@ -58,7 +58,7 @@ t_coder	*pop(t_coder *heap[], int *size)
 	t_coder	*min;
 
     if (*size == 0)
-        return NULL;
+		return NULL;
 	min = heap[0];
 	heap[0] = heap[*size - 1];
 	(*size)--;

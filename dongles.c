@@ -17,39 +17,36 @@ void	init_dongles(t_sim *sim)
 	int	i;
 
 	i = 0;
-	while (i < sim->args.number_of_coders)
+	while (i < sim->args.number_of_dongles)
 	{
-		sim->coders[i].left = sim->coders[i].id - 1;
-		sim->coders[i].right = sim->coders[i].id % sim->args.number_of_coders;
+		sim->dongles[i].waiters = malloc(sizeof(t_heap));
+		sim->dongles[i].waiters->size = 0;
+		sim->dongles[i].last_released = 0;
+		sim->dongles[i].is_available = 1;
+		pthread_mutex_init(&sim->dongles[i].mutex, NULL);
 		i++;
 	}
 }
 
-void	init_mutex(t_sim *sim)
-{
-	int	i;
 
-	i = 0;
-	while (i < sim->args.number_of_dongles)
-	{
-		pthread_mutex_init(&sim->dongles[i].mutex, NULL);
-		sim->dongles[i].last_released = 0;
-		sim->dongles[i].is_available = 1;
-		sim->dongles[i].waiters = malloc(sizeof(t_heap));
-		sim->dongles[i].waiters->size = 0;
-		i++;
-	}
+int	dongle_available(t_dongle *dongle, int cooldonw, long now)
+{
+	if (!dongle->is_available)
+		return (0);
+	if (now - dongle->last_released < cooldonw)
+		return (0);
+	return (1);
 }
 
 void	take_dongles(t_coder *coder)
 {
-	t_sim	*sim;
-	int		first;
-	int		second;
+	t_sim		*sim;
+	int			first;
+	int			second;
 	long long	now;
 
 	sim = coder->sim;
-	first = coder->left < coder->right ? coder->left : coder->right;
+	first = coder->left < coder->right ? coder->left : coder->right; //check norm
 	second = coder->left < coder->right ? coder->right : coder->left;
 	pthread_mutex_lock(&sim->sim_mtx);
 	coder_request(coder);
@@ -116,13 +113,5 @@ void	coder_request(t_coder *coder)
 	
 	push(left->waiters->waiters, &left->waiters->size, coder);
 	push(right->waiters->waiters, &right->waiters->size, coder);
-}
-
-int	dongle_available(t_dongle *dongle, int cooldonw, long now)
-{
-	if (!dongle->is_available)
-		return (0);
-	if (now - dongle->last_released < cooldonw)
-		return (0);
-	return (1);
+	// printf("Coder %d requests %d and %d\n", coder->id, coder->left, coder->right);
 }
