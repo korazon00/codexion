@@ -28,10 +28,12 @@ void *coder_routine(void *arg)
 		take_dongles(coder);
 		
 		//compiling
+		pthread_mutex_lock(&sim->sim_mtx);
 		coder->last_comp_start = get_time_ms();
 		log_state(sim, coder->id, "is compiling");
 		usleep(sim->args.time_to_compile * 1000);
 		coder->compile_count ++;
+		pthread_mutex_unlock(&sim->sim_mtx);
 
 		//release
 		release_dongles(coder);

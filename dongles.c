@@ -20,6 +20,7 @@ void	init_dongles(t_sim *sim)
 	while (i < sim->args.number_of_dongles)
 	{
 		sim->dongles[i].waiters = malloc(sizeof(t_heap));
+		sim->dongles[i].waiters->waiters = malloc(sizeof(t_coder) * 2);
 		sim->dongles[i].waiters->size = 0;
 		sim->dongles[i].last_released = 0;
 		sim->dongles[i].is_available = 1;
@@ -28,6 +29,17 @@ void	init_dongles(t_sim *sim)
 	}
 }
 
+void	destroy_mtx_dngls(t_sim *sim)
+{
+	int	i;
+
+	i = 0;
+	while(i < sim->args.number_of_dongles)
+	{
+		pthread_mutex_destroy(&sim->dongles[i].mutex);
+		i++;
+	}
+}
 
 int	dongle_available(t_dongle *dongle, int cooldonw, long now)
 {
@@ -46,7 +58,7 @@ void	take_dongles(t_coder *coder)
 	long long	now;
 
 	sim = coder->sim;
-	first = coder->left < coder->right ? coder->left : coder->right; //check norm
+	first = coder->left < coder->right ? coder->left : coder->right;
 	second = coder->left < coder->right ? coder->right : coder->left;
 	pthread_mutex_lock(&sim->sim_mtx);
 	coder_request(coder);

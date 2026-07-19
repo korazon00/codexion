@@ -66,7 +66,7 @@ typedef struct s_coder
 
 typedef struct s_heap
 {
-	t_coder *waiters[2];
+	t_coder **waiters;
 	int size;
 	
 } t_heap;
@@ -74,7 +74,7 @@ typedef struct s_heap
 typedef struct s_dongle
 {
 	int	id;
-	pthread_cond_t cond;
+	// pthread_cond_t cond;
 	pthread_mutex_t mutex;
 	long last_released;
 	t_heap	*waiters;
@@ -117,6 +117,7 @@ void	init_mutex(t_sim	*sim);
 void	take_dongles(t_coder *coder);
 void	release_dongles(t_coder *coder);
 void	coder_request(t_coder *coder);
+void	destroy_mtx_dngls(t_sim *sim);
 
 //monitor
 void	*monitor_routine(void *arg);
