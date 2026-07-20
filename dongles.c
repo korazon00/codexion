@@ -64,6 +64,11 @@ void	take_dongles(t_coder *coder)
 	coder_request(coder);
 	while(1)
 	{
+		if(should_stop(sim))
+		{
+			pthread_mutex_lock(&sim->sim_mtx);
+			return;
+		}
 		now = get_time_ms();
 		if (sim->dongles[first].waiters->waiters[0] == coder
 			&& dongle_available(&sim->dongles[first], sim->args.dongle_cooldown, now))
@@ -86,6 +91,12 @@ void	take_dongles(t_coder *coder)
 			}
 		}
 		pthread_cond_wait(&sim->cond, &sim->sim_mtx);
+		if(should_stop(sim))
+		{
+			pthread_mutex_lock(&sim->sim_mtx);
+			return;
+		}
+		printf("coder %d woke up\n", coder->id);
 	}
 }
 

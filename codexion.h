@@ -121,6 +121,7 @@ void	destroy_mtx_dngls(t_sim *sim);
 
 //monitor
 void	*monitor_routine(void *arg);
+int	should_stop(t_sim *sim);
 
 //heap
 void bubbledown(t_coder *heap[], int size, int i);

@@ -12,6 +12,16 @@
 
 #include "codexion.h"
 
+int	should_stop(t_sim *sim)
+{
+	int stop;
+
+	pthread_mutex_lock(&sim->sim_mtx);
+	stop = sim->stop;
+	pthread_mutex_unlock(&sim->sim_mtx);
+	return (stop);
+}
+
 int	comp_finished(t_sim *sim)
 {
 	int	i;
@@ -51,6 +61,7 @@ void	*monitor_routine(void *arg)
 				sim->stop = 1;
 				pthread_cond_broadcast(&sim->cond);
 				pthread_mutex_unlock(&sim->sim_mtx);
+				printf("monitor finshed\n");
 				return (NULL);
 			}
 			i++;
@@ -61,9 +72,11 @@ void	*monitor_routine(void *arg)
 			sim->stop = 1;
 			pthread_cond_broadcast(&sim->cond);
 			pthread_mutex_unlock(&sim->sim_mtx);
+			printf("monitor finshed\n");
 			return (NULL);
 		}
 		usleep(1000);
 	}
+	printf("monitor finshed\n");
 	return (NULL);
 }

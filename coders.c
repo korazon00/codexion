@@ -23,9 +23,11 @@ void *coder_routine(void *arg)
 	coder = (t_coder *)arg;
 	sim = coder->sim;
 
-	while (!sim->stop)
+	while (!should_stop(sim))
 	{
 		take_dongles(coder);
+		if (should_stop(sim))
+			return NULL;
 		
 		//compiling
 		pthread_mutex_lock(&sim->sim_mtx);
@@ -37,6 +39,7 @@ void *coder_routine(void *arg)
 
 		//release
 		release_dongles(coder);
+		log_state(sim, coder->id, "release dongles");
 
 		//debuging
 		log_state(sim, coder->id, "is debuging");
