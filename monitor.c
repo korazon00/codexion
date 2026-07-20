@@ -61,7 +61,7 @@ void	*monitor_routine(void *arg)
 				sim->stop = 1;
 				pthread_cond_broadcast(&sim->cond);
 				pthread_mutex_unlock(&sim->sim_mtx);
-				printf("monitor finshed\n");
+				printf("monitor finshed 1\n");
 				return (NULL);
 			}
 			i++;
@@ -72,11 +72,12 @@ void	*monitor_routine(void *arg)
 			sim->stop = 1;
 			pthread_cond_broadcast(&sim->cond);
 			pthread_mutex_unlock(&sim->sim_mtx);
-			printf("monitor finshed\n");
+			printf("monitor finshed 2\n");
 			return (NULL);
 		}
 		usleep(1000);
 	}
-	printf("monitor finshed\n");
+	pthread_cond_broadcast(&sim->cond);
+	printf("monitor finshed 3\n");
 	return (NULL);
 }
