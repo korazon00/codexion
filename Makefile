@@ -2,7 +2,7 @@ NAME = codexion
 
 CC = cc
 
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -pthread
 
 SRC = codexion.c coders.c dongles.c ft_time.c heap.c monitor.c parsing.c
 

@@ -20,7 +20,7 @@ void	init_dongles(t_sim *sim)
 	while (i < sim->args.number_of_dongles)
 	{
 		sim->dongles[i].waiters = malloc(sizeof(t_heap));
-		sim->dongles[i].waiters->waiters = malloc(sizeof(t_coder) * 2);
+		sim->dongles[i].waiters->waiters = malloc(sizeof(t_coder *) * 2);
 		sim->dongles[i].waiters->size = 0;
 		sim->dongles[i].last_released = 0;
 		sim->dongles[i].is_available = 1;
@@ -57,7 +57,6 @@ void	take_dongles(t_coder *coder)
 	int			second;
 	long long	now;
 	struct timespec ts;
-
 
 	sim = coder->sim;
 	first = coder->left < coder->right ? coder->left : coder->right;
@@ -103,14 +102,14 @@ void	release_dongles(t_coder *coder)
 	pthread_mutex_lock(&sim->sim_mtx);
 
 	//first_dongle
-	pthread_mutex_unlock(&sim->dongles[coder->left].mutex);
 	sim->dongles[coder->left].last_released = get_time_ms();
 	sim->dongles[coder->left].is_available = 1;
+	pthread_mutex_unlock(&sim->dongles[coder->left].mutex);
 
 	//second_dongle
-	pthread_mutex_unlock(&sim->dongles[coder->right].mutex);
 	sim->dongles[coder->right].last_released = get_time_ms();
 	sim->dongles[coder->right].is_available = 1;
+	pthread_mutex_unlock(&sim->dongles[coder->right].mutex);
 
 	pthread_cond_broadcast(&sim->cond);
 	pthread_mutex_unlock(&sim->sim_mtx);
@@ -131,5 +130,4 @@ void	coder_request(t_coder *coder)
 	
 	push(left->waiters->waiters, &left->waiters->size, coder);
 	push(right->waiters->waiters, &right->waiters->size, coder);
-	// printf("Coder %d requests %d and %d\n", coder->id, coder->left, coder->right);
 }

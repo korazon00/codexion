@@ -38,8 +38,8 @@ int	main(int argc, char **argv)
 	init_coders(&sim);
 
 	pthread_create(&sim.monitor, NULL, monitor_routine, &sim);
-	pthread_join(sim.monitor, NULL);
 	join_threads(&sim);
+	pthread_join(sim.monitor, NULL);
 
 	pthread_mutex_destroy(&sim.sim_mtx);
 	pthread_mutex_destroy(&sim.print_mtx);

@@ -1,19 +1,22 @@
 
 #include "codexion.h"
 
-// void custum_usleep(sim, time_to_sleep)
-// {
-// 	while(should_stop(sim))
-// 	{
-// 		usleep(1000);
-// 	}
-// }
+void custum_usleep(t_sim *sim, long time_to_sleep)
+{
+	long start;
+	
+	start = get_time_ms();
+	while(!should_stop(sim) && get_time_ms() - start < time_to_sleep)
+	{
+		usleep((time_to_sleep / 20) * 1000);
+	}
+}
 
 // take_bouth_dongles(sim);// befaour take bouthe the dongles should be available, and time to could down passed and hes is in the top of the queue.
-// custum_usleep(time_to_compile);
+// usleep(time_to_compile);
 // releas_dongles(sim);
-// custum_usleep(time_to_debuge);
-// custum_usleep(time_to_refactore);
+// usleep(time_to_debuge);
+// usleep(time_to_refactore);
 
 void *coder_routine(void *arg)
 {
@@ -22,20 +25,21 @@ void *coder_routine(void *arg)
 
 	coder = (t_coder *)arg;
 	sim = coder->sim;
-
 	while (!should_stop(sim))
 	{
 		take_dongles(coder);
 		if (should_stop(sim))
+		{
+			release_dongles(coder);
 			return NULL;
-		
+		}
 		//compiling
 		pthread_mutex_lock(&sim->sim_mtx);
 		coder->last_comp_start = get_time_ms();
-		log_state(sim, coder->id, "is compiling");
-		usleep(sim->args.time_to_compile * 1000);
 		coder->compile_count ++;
 		pthread_mutex_unlock(&sim->sim_mtx);
+		log_state(sim, coder->id, "is compiling");
+		custum_usleep(sim, sim->args.time_to_compile);
 
 		//release
 		release_dongles(coder);
@@ -43,11 +47,11 @@ void *coder_routine(void *arg)
 
 		//debuging
 		log_state(sim, coder->id, "is debuging");
-		usleep(sim->args.time_to_debug * 1000);
+		custum_usleep(sim, sim->args.time_to_debug);
 
 		//refactoring
 		log_state(sim, coder->id, "is refactoring");
-		usleep(sim->args.time_to_refactor * 1000);
+		custum_usleep(sim, sim->args.time_to_refactor);
 	}
 	return (NULL);
 }

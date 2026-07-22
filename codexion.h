@@ -101,10 +101,11 @@ int	parse_args(int argc, char **argv, t_args *p);
 int	check_atoi(char *s);
 int	is_positive(char *s);
 
-//threads
+//coders
 int init_coders(t_sim *sim);
 void *coder_routine(void *arg);
 int	join_threads(t_sim	*sim);
+void custum_usleep(t_sim *sim, long time_to_sleep);
 
 //ft_time
 void	log_state(t_sim	*sim, int coder_id, char *msg);
@@ -113,7 +114,7 @@ long	get_time_ms(void);
 
 //dongles
 void	init_dongles(t_sim *sim);
-void	init_mutex(t_sim	*sim);
+void	init_mutex(t_sim *sim);
 void	take_dongles(t_coder *coder);
 void	release_dongles(t_coder *coder);
 void	coder_request(t_coder *coder);
