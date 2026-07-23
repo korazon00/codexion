@@ -20,12 +20,16 @@ static int	higher_priority(t_sim *sim, t_coder *a, t_coder *b)
 {
 	// fifo
 	if (sim->args.scheduler == 1)
-		return(a->priority < b->priority)
+		return(a->priority < b->priority);
 	// edf
 	if (a->priority < b->priority)
 		return (1);
 	if (a->priority > b->priority)
 		return (0);
+	if (a->compile_count < b->compile_count)
+		return (1)
+	if (a->compile_count > b->compile_count)
+		return (0)
 
 	return (a->id < b->id);
 }
@@ -40,7 +44,7 @@ void bubbledown(t_coder *heap[], int size, int i)
 	{
 		smallest = i;
 		left = i * 2 + 1;
-		right = i * 2 + 2;
+		right = i * 2 + 2; // higher_priority(heap[smallest])
 		if (left < size && heap[smallest]->priority > heap[left]->priority)
 			smallest = left;
 		if (right < size && heap[smallest]->priority > heap[right]->priority)
