@@ -75,7 +75,7 @@ void	*monitor_routine(void *arg)
 			// printf("monitor finshed 2\n");
 			return (NULL);
 		}
-		custum_usleep(sim, 1000);
+		custum_usleep(sim, 1);
 	}
 	pthread_cond_broadcast(&sim->cond);
 	// printf("monitor finshed 3\n");

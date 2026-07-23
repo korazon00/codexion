@@ -8,7 +8,7 @@ void custum_usleep(t_sim *sim, long time_to_sleep)
 	start = get_time_ms();
 	while(!should_stop(sim) && get_time_ms() - start < time_to_sleep)
 	{
-		usleep((time_to_sleep / 20) * 1000);
+		usleep(500);
 	}
 }
 
@@ -25,6 +25,12 @@ void *coder_routine(void *arg)
 
 	coder = (t_coder *)arg;
 	sim = coder->sim;
+	if (sim->args.number_of_coders == 1)
+	{
+		log_state(sim, coder->id, "has taken a dongle");
+		custum_usleep(sim, sim->args.time_to_burnout);
+		return(NULL);
+	}
 	while (!should_stop(sim))
 	{
 		take_dongles(coder);

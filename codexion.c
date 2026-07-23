@@ -19,13 +19,12 @@ int	main(int argc, char **argv)
 
 	if (!parse_args(argc, argv, &params))
 		return (1);
-
-
+		
 	sim.coders = malloc(sizeof(t_coder) * params.number_of_coders);
 	sim.dongles = malloc(sizeof(t_dongle) * params.number_of_dongles);
 	if (!sim.coders || !sim.dongles)
-		return (1);
-
+	return (1);
+	
 	sim.args = params;
 	sim.stop = 0;
 	sim.start_time = get_time_ms();
