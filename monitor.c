@@ -41,10 +41,24 @@ int	comp_finished(t_sim *sim)
 	return (1);
 }
 
+static int	is_not_bournout(t_sim *sim, t_coder *coder)
+{
+	long	now;
+
+	now = get_time_ms();
+	pthread_mutex_lock(&sim->monitor_mtx);
+	if (now - coder->last_comp_start > sim->args.time_to_burnout)
+	{
+		pthread_mutex_unlock(&sim->monitor_mtx);	
+		return (1);
+	}
+	pthread_mutex_unlock(&sim->monitor_mtx);
+	return (0);
+}
+
 void	*monitor_routine(void *arg)
 {
 	t_sim	*sim;
-	long	now;
 	int		i;
 
 	sim = (t_sim *)arg;
@@ -53,8 +67,7 @@ void	*monitor_routine(void *arg)
 		i = 0;
 		while (i < sim->args.number_of_coders)
 		{
-			now = get_time_ms();
-			if (now - sim->coders[i].last_comp_start > sim->args.time_to_burnout)
+			if (is_not_bournout(sim, &sim->coders[i]))
 			{
 				pthread_mutex_lock(&sim->sim_mtx);
 				log_state(sim, sim->coders[i].id, "burned out");

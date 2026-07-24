@@ -72,12 +72,12 @@ void	take_dongles(t_coder *coder)
 			if (sim->dongles[second].waiters->waiters[0] == coder 
 			&& dongle_available(&sim->dongles[second], sim->args.dongle_cooldown, now))
 			{
-				pop(sim->dongles[first].waiters->waiters, &sim->dongles[first].waiters->size);
+				pop(sim, sim->dongles[first].waiters->waiters, &sim->dongles[first].waiters->size);
 				sim->dongles[first].is_available = 0;
 				pthread_mutex_lock(&sim->dongles[first].mutex);
 				log_state(sim, coder->id, "has taken a dongle");
 
-				pop(sim->dongles[second].waiters->waiters, &sim->dongles[second].waiters->size);
+				pop(sim, sim->dongles[second].waiters->waiters, &sim->dongles[second].waiters->size);
 				sim->dongles[second].is_available = 0;
 				pthread_mutex_lock(&sim->dongles[second].mutex);
 				log_state(sim, coder->id, "has taken a dongle");

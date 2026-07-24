@@ -31,6 +31,7 @@ int	main(int argc, char **argv)
 
 	pthread_mutex_init(&sim.sim_mtx, NULL);
 	pthread_mutex_init(&sim.print_mtx, NULL);
+	pthread_mutex_init(&sim.monitor_mtx, NULL);
 	pthread_cond_init(&sim.cond, NULL);
 
 	init_dongles(&sim);
@@ -42,6 +43,7 @@ int	main(int argc, char **argv)
 
 	pthread_mutex_destroy(&sim.sim_mtx);
 	pthread_mutex_destroy(&sim.print_mtx);
+	pthread_mutex_destroy(&sim.monitor_mtx);
 	pthread_cond_destroy(&sim.cond);
 	destroy_mtx_dngls(&sim);
 	free(sim.coders);

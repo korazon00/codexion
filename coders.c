@@ -12,11 +12,16 @@ void custum_usleep(t_sim *sim, long time_to_sleep)
 	}
 }
 
-// take_bouth_dongles(sim);// befaour take bouthe the dongles should be available, and time to could down passed and hes is in the top of the queue.
-// usleep(time_to_compile);
-// releas_dongles(sim);
-// usleep(time_to_debuge);
-// usleep(time_to_refactore);
+static void	is_odd(t_sim *sim, t_coder *coder)
+{
+	long	time_to_sleep;
+
+	time_to_sleep = (sim->args.time_to_compile + sim->args.dongle_cooldown) / 2;
+	if (coder->id % 2 == 0)
+	{
+		custum_usleep(sim, time_to_sleep);
+	}
+}
 
 void *coder_routine(void *arg)
 {
@@ -31,6 +36,7 @@ void *coder_routine(void *arg)
 		custum_usleep(sim, sim->args.time_to_burnout);
 		return(NULL);
 	}
+	is_odd(sim, coder);
 	while (!should_stop(sim))
 	{
 		take_dongles(coder);
@@ -49,7 +55,6 @@ void *coder_routine(void *arg)
 
 		//release
 		release_dongles(coder);
-		log_state(sim, coder->id, "release dongles");
 
 		//debuging
 		log_state(sim, coder->id, "is debuging");
