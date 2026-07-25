@@ -45,7 +45,7 @@ int	main(int argc, char **argv)
 	pthread_mutex_destroy(&sim.print_mtx);
 	pthread_mutex_destroy(&sim.monitor_mtx);
 	pthread_cond_destroy(&sim.cond);
-	destroy_mtx_dngls(&sim);
+	destroy_mtx(&sim);
 	free(sim.coders);
 	free(sim.dongles);
 	return (0);

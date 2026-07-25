@@ -42,14 +42,17 @@ void *coder_routine(void *arg)
 		take_dongles(coder);
 		if (should_stop(sim))
 		{
-			release_dongles(coder);
+			if (!sim->dongles[coder->left].is_available &&
+				!sim->dongles[coder->right].is_available)
+				release_dongles(coder);
 			return NULL;
 		}
 		//compiling
-		pthread_mutex_lock(&sim->sim_mtx);
+		pthread_mutex_lock(&coder->coder_mtx);
+
 		coder->last_comp_start = get_time_ms();
 		coder->compile_count ++;
-		pthread_mutex_unlock(&sim->sim_mtx);
+		pthread_mutex_unlock(&coder->coder_mtx);
 		log_state(sim, coder->id, "is compiling");
 		custum_usleep(sim, sim->args.time_to_compile);
 
@@ -57,7 +60,7 @@ void *coder_routine(void *arg)
 		release_dongles(coder);
 
 		//debuging
-		log_state(sim, coder->id, "is debuging");
+		log_state(sim, coder->id, "is debugging");
 		custum_usleep(sim, sim->args.time_to_debug);
 
 		//refactoring
@@ -81,6 +84,7 @@ int init_coders(t_sim *sim)
 		sim->coders[i].last_comp_start = sim->start_time;
 		sim->coders[i].left = sim->coders[i].id - 1;
 		sim->coders[i].right = sim->coders[i].id % sim->args.number_of_coders;
+		pthread_mutex_init(&sim->coders[i].coder_mtx, NULL);
 
 		if (pthread_create(
 			&sim->coders[i].thread,

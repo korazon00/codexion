@@ -64,7 +64,7 @@ void	push(t_coder *heap[], int *size, t_coder *coder)
 	i = *size;
 	(*size)++;
 
-	while (i > 0 && heap[(i - 1) / 2]->priority > heap[i]->priority)
+	while (i > 0 && higher_priority(coder->sim, heap[i], heap[(i -1) / 2]))
 	{
 		swap(&heap[i], &heap[(i - 1) / 2]);
 		i = (i - 1) / 2;

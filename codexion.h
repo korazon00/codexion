@@ -59,7 +59,7 @@ typedef struct s_coder
 	int compile_count;
 	int	left;
 	int	right;
-	pthread_mutex_t	mtx;
+	pthread_mutex_t	coder_mtx;
 	struct s_simulation *sim;
 	long long priority;
 } t_coder;
@@ -119,7 +119,7 @@ void	init_mutex(t_sim *sim);
 void	take_dongles(t_coder *coder);
 void	release_dongles(t_coder *coder);
 void	coder_request(t_coder *coder);
-void	destroy_mtx_dngls(t_sim *sim);
+void	destroy_mtx(t_sim *sim);
 
 //monitor
 void	*monitor_routine(void *arg);
