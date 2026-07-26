@@ -19,14 +19,26 @@ int	init_dongles(t_sim *sim)
 	i = 0;
 	while (i < sim->args.number_of_dongles)
 	{
+		// sim->dongles[i].waiters = malloc(sizeof(t_heap));
+		// sim->dongles[i].waiters->waiters = malloc(sizeof(t_coder *) * 2);
+		sim->dongles[i].waiters = NULL;
 		sim->dongles[i].waiters = malloc(sizeof(t_heap));
+		if (!sim->dongles[i].waiters)
+			return (0);
 		sim->dongles[i].waiters->waiters = malloc(sizeof(t_coder *) * 2);
+		if (!sim->dongles[i].waiters->waiters)
+		{
+			free(sim->dongles[i].waiters);
+			sim->dongles[i].waiters = NULL;
+			return (0);
+		}
 		sim->dongles[i].waiters->size = 0;
 		sim->dongles[i].last_released = 0;
 		sim->dongles[i].is_available = 1;
 		pthread_mutex_init(&sim->dongles[i].mutex, NULL);
 		i++;
 	}
+	return (1);
 }
 
 void	destroy_mtx(t_sim *sim)

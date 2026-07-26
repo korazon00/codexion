@@ -12,17 +12,6 @@
 
 #include "codexion.h"
 
-// static int init_all(t_sim *sim)
-// {
-// 	pthread_mutex_init(&sim->sim_mtx, NULL);
-// 	pthread_mutex_init(&sim->print_mtx, NULL);
-// 	pthread_mutex_init(&sim->monitor_mtx, NULL);
-// 	pthread_cond_init(&sim->cond, NULL);
-// 	init_dongles(&sim);
-// 	if (init_coders(&sim) == 1)
-// 		return (1);
-// 	return (0);
-// }
 static int	init_all(t_sim *sim)
 {
 	if (pthread_mutex_init(&sim->sim_mtx, NULL))
@@ -33,10 +22,8 @@ static int	init_all(t_sim *sim)
 		return (0);
 	if (pthread_cond_init(&sim->cond, NULL))
 		return (0);
-
 	if (!init_dongles(sim))
 		return (0);
-
 	if (!init_coders(sim))
 		return (0);
 
@@ -98,6 +85,7 @@ int	main(int argc, char **argv)
 	pthread_create(&sim.monitor, NULL, monitor_routine, &sim);
 	join_threads(&sim);
 	pthread_join(sim.monitor, NULL);
+	destroy_all(&sim);
 	free_all(&sim);
 	return (0);
 }
