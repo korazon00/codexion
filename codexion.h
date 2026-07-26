@@ -37,20 +37,6 @@ typedef struct s_args
 
 } t_args;
 
-// typedef struct s_waiter
-// {
-// 	int coder_id;
-// 	// long long spawn_time;
-// 	// long long deadline;
-// 	long long priority;
-// 	// fifo: waiter.spawn_time = get_time_ms()
-// 	//		waiter.priority = waiter.spawn_time
-// 	//edf:priority = last_comp_start + time_to_burnout
-// 	//edf: waiter.deadline = coder.last_comp_start + sim->args.time_to_burnout;
-// 	// waiter.proirity = waiter.deadline
-
-// } t_waiter;
-
 typedef struct s_coder
 {
 	int	id;
@@ -114,7 +100,7 @@ long	timestamp(t_sim *sim);
 long	get_time_ms(void);
 
 //dongles
-void	init_dongles(t_sim *sim);
+int	init_dongles(t_sim *sim);
 void	init_mutex(t_sim *sim);
 void	take_dongles(t_coder *coder);
 void	release_dongles(t_coder *coder);

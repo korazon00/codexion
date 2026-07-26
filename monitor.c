@@ -51,7 +51,7 @@ static int	is_not_burnout(t_sim *sim, t_coder *coder)
 	last_comp_start = coder->last_comp_start;
 	pthread_mutex_unlock(&coder->coder_mtx);
 	pthread_mutex_lock(&sim->monitor_mtx);
-	if (now - last_comp_start > sim->args.time_to_burnout)
+	if (now - last_comp_start >= sim->args.time_to_burnout)
 	{
 		pthread_mutex_unlock(&sim->monitor_mtx);	
 		return (1);
@@ -66,6 +66,7 @@ void	*monitor_routine(void *arg)
 	int		i;
 
 	sim = (t_sim *)arg;
+	pthread_cond_broadcast(&sim->cond);
 	while (!sim->stop)
 	{
 		i = 0;
@@ -78,7 +79,6 @@ void	*monitor_routine(void *arg)
 				sim->stop = 1;
 				pthread_cond_broadcast(&sim->cond);
 				pthread_mutex_unlock(&sim->sim_mtx);
-				// printf("monitor finshed 1\n");
 				return (NULL);
 			}
 			i++;
@@ -89,12 +89,10 @@ void	*monitor_routine(void *arg)
 			sim->stop = 1;
 			pthread_cond_broadcast(&sim->cond);
 			pthread_mutex_unlock(&sim->sim_mtx);
-			// printf("monitor finshed 2\n");
 			return (NULL);
 		}
 		custum_usleep(sim, 1);
 	}
 	pthread_cond_broadcast(&sim->cond);
-	// printf("monitor finshed 3\n");
 	return (NULL);
 }

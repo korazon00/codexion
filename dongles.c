@@ -12,7 +12,7 @@
 
 #include "codexion.h"
 
-void	init_dongles(t_sim *sim)
+int	init_dongles(t_sim *sim)
 {
 	int	i;
 
@@ -90,7 +90,6 @@ void	take_dongles(t_coder *coder)
 				pthread_mutex_unlock(&sim->sim_mtx);
 				return;
 			}
-			//wait here 
 		}
 		pthread_mutex_lock(&coder->coder_mtx);
 		wake_up = coder->last_comp_start + sim->args.dongle_cooldown;
@@ -111,12 +110,10 @@ void	release_dongles(t_coder *coder)
 	//first_dongle
 	sim->dongles[coder->left].last_released = get_time_ms();
 	sim->dongles[coder->left].is_available = 1;
-	// pthread_mutex_unlock(&sim->dongles[coder->left].mutex);
 
 	//second_dongle
 	sim->dongles[coder->right].last_released = get_time_ms();
 	sim->dongles[coder->right].is_available = 1;
-	// pthread_mutex_unlock(&sim->dongles[coder->right].mutex);
 
 	pthread_cond_broadcast(&sim->cond);
 	pthread_mutex_unlock(&sim->sim_mtx);

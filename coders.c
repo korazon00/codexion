@@ -30,6 +30,9 @@ void *coder_routine(void *arg)
 
 	coder = (t_coder *)arg;
 	sim = coder->sim;
+	pthread_mutex_lock(&coder->coder_mtx);
+	pthread_cond_wait(&sim->cond, &coder->coder_mtx);
+	pthread_mutex_unlock(&coder->coder_mtx);
 	if (sim->args.number_of_coders == 1)
 	{
 		log_state(sim, coder->id, "has taken a dongle");
@@ -49,7 +52,6 @@ void *coder_routine(void *arg)
 		}
 		//compiling
 		pthread_mutex_lock(&coder->coder_mtx);
-
 		coder->last_comp_start = get_time_ms();
 		coder->compile_count ++;
 		pthread_mutex_unlock(&coder->coder_mtx);
