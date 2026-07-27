@@ -23,6 +23,13 @@ static void	is_odd(t_sim *sim, t_coder *coder)
 	}
 }
 
+static int one_coder(t_sim *sim, t_coder *coder)
+{
+		log_state(sim, coder->id, "has taken a dongle");
+		custum_usleep(sim, sim->args.time_to_burnout);
+		return (1);
+}
+
 void *coder_routine(void *arg)
 {
 	t_coder	*coder;
@@ -30,44 +37,23 @@ void *coder_routine(void *arg)
 
 	coder = (t_coder *)arg;
 	sim = coder->sim;
-	pthread_mutex_lock(&coder->coder_mtx);
-	pthread_cond_wait(&sim->cond, &coder->coder_mtx);
-	pthread_mutex_unlock(&coder->coder_mtx);
+	waiting_station(sim, coder);
 	if (sim->args.number_of_coders == 1)
-	{
-		log_state(sim, coder->id, "has taken a dongle");
-		custum_usleep(sim, sim->args.time_to_burnout);
-		return(NULL);
-	}
+		if (one_coder(sim, coder))
+			return(NULL);
 	is_odd(sim, coder);
 	while (!should_stop(sim))
 	{
 		take_dongles(coder);
 		if (should_stop(sim))
 		{
-			if (!sim->dongles[coder->left].is_available &&
-				!sim->dongles[coder->right].is_available)
-				release_dongles(coder);
-			return NULL;
+			release_dongles_if_not_aval(sim, coder);
+			return (NULL);
 		}
-		//compiling
-		pthread_mutex_lock(&coder->coder_mtx);
-		coder->last_comp_start = get_time_ms();
-		coder->compile_count ++;
-		pthread_mutex_unlock(&coder->coder_mtx);
-		log_state(sim, coder->id, "is compiling");
-		custum_usleep(sim, sim->args.time_to_compile);
-
-		//release
+		compiling(sim, coder);
 		release_dongles(coder);
-
-		//debuging
-		log_state(sim, coder->id, "is debugging");
-		custum_usleep(sim, sim->args.time_to_debug);
-
-		//refactoring
-		log_state(sim, coder->id, "is refactoring");
-		custum_usleep(sim, sim->args.time_to_refactor);
+		debuging(sim, coder);
+		refactoring(sim, coder);
 	}
 	return (NULL);
 }

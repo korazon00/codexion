@@ -60,6 +60,24 @@ static int	is_not_burnout(t_sim *sim, t_coder *coder)
 	return (0);
 }
 
+void if_is_not_burnout(t_sim *sim, int i)
+{
+	pthread_mutex_lock(&sim->sim_mtx);
+	log_state(sim, sim->coders[i].id, "burned out");
+	sim->stop = 1;
+	pthread_cond_broadcast(&sim->cond);
+	pthread_mutex_unlock(&sim->sim_mtx);
+}
+
+int	if_comp_finished(t_sim *sim)
+{
+	pthread_mutex_lock(&sim->sim_mtx);
+	sim->stop = 1;
+	pthread_cond_broadcast(&sim->cond);
+	pthread_mutex_unlock(&sim->sim_mtx);
+	return (1);
+}
+
 void	*monitor_routine(void *arg)
 {
 	t_sim	*sim;
@@ -74,23 +92,14 @@ void	*monitor_routine(void *arg)
 		{
 			if (is_not_burnout(sim, &sim->coders[i]))
 			{
-				pthread_mutex_lock(&sim->sim_mtx);
-				log_state(sim, sim->coders[i].id, "burned out");
-				sim->stop = 1;
-				pthread_cond_broadcast(&sim->cond);
-				pthread_mutex_unlock(&sim->sim_mtx);
+				if_is_not_burnout(sim, i);
 				return (NULL);
 			}
 			i++;
 		}
 		if (comp_finished(sim))
-		{
-			pthread_mutex_lock(&sim->sim_mtx);
-			sim->stop = 1;
-			pthread_cond_broadcast(&sim->cond);
-			pthread_mutex_unlock(&sim->sim_mtx);
-			return (NULL);
-		}
+			if (if_comp_finished(sim))
+				return (NULL);
 		custum_usleep(sim, 1);
 	}
 	pthread_cond_broadcast(&sim->cond);

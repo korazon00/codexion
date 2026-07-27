@@ -19,8 +19,6 @@ int	init_dongles(t_sim *sim)
 	i = 0;
 	while (i < sim->args.number_of_dongles)
 	{
-		// sim->dongles[i].waiters = malloc(sizeof(t_heap));
-		// sim->dongles[i].waiters->waiters = malloc(sizeof(t_coder *) * 2);
 		sim->dongles[i].waiters = NULL;
 		sim->dongles[i].waiters = malloc(sizeof(t_heap));
 		if (!sim->dongles[i].waiters)
@@ -28,7 +26,11 @@ int	init_dongles(t_sim *sim)
 		sim->dongles[i].waiters->waiters = malloc(sizeof(t_coder *) * 2);
 		if (!sim->dongles[i].waiters->waiters)
 		{
-			free(sim->dongles[i].waiters);
+			while(--i >= 0)
+			{
+				free(sim->dongles[i].waiters->waiters);
+				free(sim->dongles[i].waiters);
+			}
 			sim->dongles[i].waiters = NULL;
 			return (0);
 		}

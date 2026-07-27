@@ -60,7 +60,6 @@ typedef struct s_heap
 typedef struct s_dongle
 {
 	int	id;
-	// pthread_cond_t cond;
 	pthread_mutex_t mutex;
 	long last_released;
 	t_heap	*waiters;
@@ -117,4 +116,10 @@ void	push(t_coder *heap[], int *size, t_coder *coder);
 t_coder	*pop(t_sim *sim,t_coder *heap[], int *size);
 void	swap(t_coder **a, t_coder **b);
 
+//cdr_rtn_func
+void compiling(t_sim *sim, t_coder *coder);
+void debuging(t_sim *sim, t_coder *coder);
+void refactoring(t_sim *sim, t_coder *coder);
+void waiting_station(t_sim *sim, t_coder *coder);
+void release_dongles_if_not_aval(t_sim *sim, t_coder *coder);
 #endif
