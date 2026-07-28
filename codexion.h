@@ -21,7 +21,6 @@
 #include <pthread.h>
 #include <sys/time.h>
 
-
 typedef struct s_args
 {
     int number_of_coders;
@@ -91,24 +90,23 @@ int	is_positive(char *s);
 int init_coders(t_sim *sim);
 void *coder_routine(void *arg);
 int	join_threads(t_sim	*sim);
-void custum_usleep(t_sim *sim, long time_to_sleep);
 
 //ft_time
 void	log_state(t_sim	*sim, int coder_id, char *msg);
 long	timestamp(t_sim *sim);
 long	get_time_ms(void);
+int	should_stop(t_sim *sim);
+void custum_usleep(t_sim *sim, long time_to_sleep);
 
 //dongles
 int	init_dongles(t_sim *sim);
 void	init_mutex(t_sim *sim);
-void	take_dongles(t_coder *coder);
+void	dongles_request(t_coder *coder);
 void	release_dongles(t_coder *coder);
-void	coder_request(t_coder *coder);
 void	destroy_mtx(t_sim *sim);
 
 //monitor
 void	*monitor_routine(void *arg);
-int	should_stop(t_sim *sim);
 
 //heap
 void bubbledown(t_sim *sim,t_coder *heap[], int size, int i);
@@ -121,5 +119,12 @@ void compiling(t_sim *sim, t_coder *coder);
 void debuging(t_sim *sim, t_coder *coder);
 void refactoring(t_sim *sim, t_coder *coder);
 void waiting_station(t_sim *sim, t_coder *coder);
-void release_dongles_if_not_aval(t_sim *sim, t_coder *coder);
+void release_dongles_if_not_avail(t_sim *sim, t_coder *coder);
+
+//helpful_functs
+void	destroy_mtx(t_sim *sim);
+int	dongle_available(t_dongle *dongle, int cooldonw, long now);
+void	coder_request(t_coder *coder);
+void	coder_waiting(t_sim *sim, t_coder *coder);
+void	init_my_dongles(t_coder *coder, int *first, int *second);
 #endif

@@ -12,16 +12,6 @@
 
 #include "codexion.h"
 
-int	should_stop(t_sim *sim)
-{
-	int stop;
-
-	pthread_mutex_lock(&sim->sim_mtx);
-	stop = sim->stop;
-	pthread_mutex_unlock(&sim->sim_mtx);
-	return (stop);
-}
-
 int	comp_finished(t_sim *sim)
 {
 	int	i;
@@ -30,7 +20,8 @@ int	comp_finished(t_sim *sim)
 	i = 0;
 	while (i < sim->args.number_of_coders)
 	{
-		if (sim->coders[i].compile_count < sim->args.number_of_compiles_required)
+		if (sim->coders[i].compile_count < \
+sim->args.number_of_compiles_required)
 		{
 			pthread_mutex_unlock(&sim->sim_mtx);
 			return (0);
@@ -44,7 +35,7 @@ int	comp_finished(t_sim *sim)
 static int	is_not_burnout(t_sim *sim, t_coder *coder)
 {
 	long	now;
-	long last_comp_start;
+	long	last_comp_start;
 
 	now = get_time_ms();
 	pthread_mutex_lock(&coder->coder_mtx);
@@ -53,14 +44,14 @@ static int	is_not_burnout(t_sim *sim, t_coder *coder)
 	pthread_mutex_lock(&sim->monitor_mtx);
 	if (now - last_comp_start >= sim->args.time_to_burnout)
 	{
-		pthread_mutex_unlock(&sim->monitor_mtx);	
+		pthread_mutex_unlock(&sim->monitor_mtx);
 		return (1);
 	}
 	pthread_mutex_unlock(&sim->monitor_mtx);
 	return (0);
 }
 
-void if_is_not_burnout(t_sim *sim, int i)
+void	if_is_not_burnout(t_sim *sim, int i)
 {
 	pthread_mutex_lock(&sim->sim_mtx);
 	log_state(sim, sim->coders[i].id, "burned out");

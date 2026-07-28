@@ -17,7 +17,7 @@ long	get_time_ms(void)
 	struct timeval	tv;
 
 	gettimeofday(&tv, NULL);
-	return ((tv.tv_sec * 1000 ) + (tv.tv_usec / 1000));
+	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
 long	timestamp(t_sim *sim)
@@ -31,4 +31,25 @@ void	log_state(t_sim	*sim, int coder_id, char *msg)
 	if (!sim -> stop)
 		printf("%ld %d %s\n", timestamp(sim), coder_id, msg);
 	pthread_mutex_unlock(&sim->print_mtx);
+}
+
+int	should_stop(t_sim *sim)
+{
+	int	stop;
+
+	pthread_mutex_lock(&sim->sim_mtx);
+	stop = sim->stop;
+	pthread_mutex_unlock(&sim->sim_mtx);
+	return (stop);
+}
+
+void	custum_usleep(t_sim *sim, long time_to_sleep)
+{
+	long	start;
+
+	start = get_time_ms();
+	while (!should_stop(sim) && get_time_ms() - start < time_to_sleep)
+	{
+		usleep(500);
+	}
 }

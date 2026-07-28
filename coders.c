@@ -1,16 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   coders.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: faeljedd <faeljedd@student.42.fr>          #+#  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026-07-28 14:06:33 by faeljedd          #+#    #+#             */
+/*   Updated: 2026-07-28 14:06:33 by faeljedd         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "codexion.h"
-
-void custum_usleep(t_sim *sim, long time_to_sleep)
-{
-	long start;
-	
-	start = get_time_ms();
-	while(!should_stop(sim) && get_time_ms() - start < time_to_sleep)
-	{
-		usleep(500);
-	}
-}
 
 static void	is_odd(t_sim *sim, t_coder *coder)
 {
@@ -44,10 +44,10 @@ void *coder_routine(void *arg)
 	is_odd(sim, coder);
 	while (!should_stop(sim))
 	{
-		take_dongles(coder);
+		dongles_request(coder);
 		if (should_stop(sim))
 		{
-			release_dongles_if_not_aval(sim, coder);
+			release_dongles_if_not_avail(sim, coder);
 			return (NULL);
 		}
 		compiling(sim, coder);

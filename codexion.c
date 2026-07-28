@@ -57,6 +57,15 @@ static void free_all(t_sim *sim)
 	free(sim->coders);
 }
 
+void	codexion(t_sim *sim)
+{
+	pthread_create(&sim->monitor, NULL, monitor_routine, sim);
+	join_threads(sim);
+	pthread_join(sim->monitor, NULL);
+	destroy_all(sim);
+	free_all(sim);
+}
+
 int	main(int argc, char **argv)
 {
 	t_args	params;
@@ -82,10 +91,6 @@ int	main(int argc, char **argv)
 		free_all(&sim);
 		return (1);
 	}
-	pthread_create(&sim.monitor, NULL, monitor_routine, &sim);
-	join_threads(&sim);
-	pthread_join(sim.monitor, NULL);
-	destroy_all(&sim);
-	free_all(&sim);
+	codexion(&sim);
 	return (0);
 }

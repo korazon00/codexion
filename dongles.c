@@ -12,6 +12,13 @@
 
 #include "codexion.h"
 
+void	init_dongles_2(t_sim *sim, int i)
+{
+	sim->dongles[i].waiters->size = 0;
+	sim->dongles[i].last_released = 0;
+	sim->dongles[i].is_available = 1;
+}
+
 int	init_dongles(t_sim *sim)
 {
 	int	i;
@@ -34,49 +41,37 @@ int	init_dongles(t_sim *sim)
 			sim->dongles[i].waiters = NULL;
 			return (0);
 		}
-		sim->dongles[i].waiters->size = 0;
-		sim->dongles[i].last_released = 0;
-		sim->dongles[i].is_available = 1;
+		init_dongles_2(sim, i);
 		pthread_mutex_init(&sim->dongles[i].mutex, NULL);
 		i++;
 	}
 	return (1);
 }
 
-void	destroy_mtx(t_sim *sim)
+void	take_dongles(t_sim *sim, t_coder *coder, int first, int second)
 {
-	int	i;
-
-	i = 0;
-	while(i < sim->args.number_of_coders)
-	{
-		pthread_mutex_destroy(&sim->coders[i].coder_mtx);
-		pthread_mutex_destroy(&sim->dongles[i].mutex);
-		i++;
-	}
+	pthread_mutex_lock(&sim->dongles[first].mutex);
+	pthread_mutex_lock(&sim->dongles[second].mutex);
+	pop(sim, sim->dongles[first].waiters->waiters, &sim->dongles[first].waiters->size);
+	sim->dongles[first].is_available = 0;
+	log_state(sim, coder->id, "has taken a dongle");
+	pop(sim, sim->dongles[second].waiters->waiters, &sim->dongles[second].waiters->size);
+	sim->dongles[second].is_available = 0;
+	log_state(sim, coder->id, "has taken a dongle");
+	pthread_mutex_unlock(&sim->dongles[first].mutex);
+	pthread_mutex_unlock(&sim->dongles[second].mutex);
+	pthread_mutex_unlock(&sim->sim_mtx);
 }
 
-int	dongle_available(t_dongle *dongle, int cooldonw, long now)
-{
-	if (!dongle->is_available)
-		return (0);
-	if (now - dongle->last_released < cooldonw)
-		return (0);
-	return (1);
-}
-
-void	take_dongles(t_coder *coder)
+void	dongles_request(t_coder *coder)
 {
 	t_sim		*sim;
 	int			first;
 	int			second;
 	long long	now;
-	struct timespec ts;
-	long		wake_up;
 
 	sim = coder->sim;
-	first = coder->left < coder->right ? coder->left : coder->right;
-	second = coder->left < coder->right ? coder->right : coder->left;
+	init_my_dongles(coder, &first, &second);
 	pthread_mutex_lock(&sim->sim_mtx);
 	coder_request(coder);
 	while(1)
@@ -88,29 +83,11 @@ void	take_dongles(t_coder *coder)
 			if (sim->dongles[second].waiters->waiters[0] == coder 
 			&& dongle_available(&sim->dongles[second], sim->args.dongle_cooldown, now))
 			{
-				pthread_mutex_lock(&sim->dongles[first].mutex);
-				pthread_mutex_lock(&sim->dongles[second].mutex);
-				pop(sim, sim->dongles[first].waiters->waiters, &sim->dongles[first].waiters->size);
-				sim->dongles[first].is_available = 0;
-				log_state(sim, coder->id, "has taken a dongle");
-
-				pop(sim, sim->dongles[second].waiters->waiters, &sim->dongles[second].waiters->size);
-				sim->dongles[second].is_available = 0;
-				log_state(sim, coder->id, "has taken a dongle");
-				
-				pthread_mutex_unlock(&sim->dongles[first].mutex);
-				pthread_mutex_unlock(&sim->dongles[second].mutex);
-				
-				pthread_mutex_unlock(&sim->sim_mtx);
+				take_dongles(sim, coder, first, second);
 				return;
 			}
 		}
-		pthread_mutex_lock(&coder->coder_mtx);
-		wake_up = coder->last_comp_start + sim->args.dongle_cooldown;
-		ts.tv_sec = wake_up / 1000;
-		ts.tv_nsec = (wake_up % 1000) * 1000000L;
-		pthread_mutex_unlock(&coder->coder_mtx);
-		pthread_cond_timedwait(&sim->cond, &sim->sim_mtx, &ts);
+		coder_waiting(sim, coder);
 	}
 }
 
@@ -131,23 +108,4 @@ void	release_dongles(t_coder *coder)
 
 	pthread_cond_broadcast(&sim->cond);
 	pthread_mutex_unlock(&sim->sim_mtx);
-}
-
-void	coder_request(t_coder *coder)
-{
-	t_dongle	*left;
-	t_dongle	*right;
-
-	pthread_mutex_lock(&coder->coder_mtx);
-	left = &coder->sim->dongles[coder->left];
-	right = &coder->sim->dongles[coder->right];
-
-	if (coder->sim->args.scheduler == 1)
-		coder->priority = get_time_ms();
-	else
-		coder->priority = coder->last_comp_start + coder->sim->args.time_to_burnout;
-	
-	push(left->waiters->waiters, &left->waiters->size, coder);
-	push(right->waiters->waiters, &right->waiters->size, coder);
-	pthread_mutex_unlock(&coder->coder_mtx);
 }
