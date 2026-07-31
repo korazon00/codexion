@@ -42,7 +42,7 @@ static int	is_not_burnout(t_sim *sim, t_coder *coder)
 	last_comp_start = coder->last_comp_start;
 	pthread_mutex_unlock(&coder->coder_mtx);
 	pthread_mutex_lock(&sim->monitor_mtx);
-	if (now - last_comp_start > sim->args.time_to_burnout)
+	if (now - last_comp_start >= sim->args.time_to_burnout)
 	{
 		pthread_mutex_unlock(&sim->monitor_mtx);
 		return (1);
@@ -75,6 +75,7 @@ void	*monitor_routine(void *arg)
 	int		i;
 
 	sim = (t_sim *)arg;
+	sim->start_time = get_time_ms();
 	pthread_cond_broadcast(&sim->cond);
 	while (!sim->stop)
 	{

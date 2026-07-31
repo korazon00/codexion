@@ -69,7 +69,7 @@ int	init_coders(t_sim *sim)
 		sim->dongles[i].id = i;
 		sim->coders[i].compile_count = 0;
 		sim->coders[i].sim = sim;
-		sim->coders[i].last_comp_start = sim->start_time;
+		sim->coders[i].last_comp_start = get_time_ms();
 		sim->coders[i].left = sim->coders[i].id - 1;
 		sim->coders[i].right = sim->coders[i].id % sim->args.number_of_coders;
 		pthread_mutex_init(&sim->coders[i].coder_mtx, NULL);

@@ -83,7 +83,6 @@ int	main(int argc, char **argv)
 	}
 	sim.args = params;
 	sim.stop = 0;
-	sim.start_time = get_time_ms();
 	if (!init_all(&sim))
 	{
 		destroy_all(&sim);

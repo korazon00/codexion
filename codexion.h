@@ -75,47 +75,32 @@ typedef struct s_simulation
 	pthread_t		monitor;
 }					t_sim;
 
-//prsing
+
 int		parse_args(int argc, char **argv, t_args *p);
 int		check_atoi(char *s);
 int		is_positive(char *s);
-
-//coders
 int		init_coders(t_sim *sim);
 void	*coder_routine(void *arg);
 int		join_threads(t_sim	*sim);
-
-//ft_time
 void	log_state(t_sim	*sim, int coder_id, char *msg);
 long	timestamp(t_sim *sim);
 long	get_time_ms(void);
 int		should_stop(t_sim *sim);
 void	custum_usleep(t_sim *sim, long time_to_sleep);
-
-//dongles
 int		init_dongles(t_sim *sim);
-void	init_mutex(t_sim *sim);
 void	dongles_request(t_coder *coder);
 void	release_dongles(t_coder *coder);
 void	destroy_mtx(t_sim *sim);
-
-//monitor
 void	*monitor_routine(void *arg);
-
-//heap
 void	bubbledown(t_coder *heap[], int size, int i);
 void	push(t_coder *heap[], int *size, t_coder *coder);
 t_coder	*pop(t_coder *heap[], int *size);
 void	swap(t_coder **a, t_coder **b);
-
-//cdr_rtn_func
 void	compiling(t_sim *sim, t_coder *coder);
 void	debuging(t_sim *sim, t_coder *coder);
 void	refactoring(t_sim *sim, t_coder *coder);
 void	waiting_station(t_sim *sim, t_coder *coder);
 void	release_dongles_if_not_avail(t_sim *sim, t_coder *coder);
-
-//helpful_functs
 void	destroy_mtx(t_sim *sim);
 int		dongle_available(t_dongle *dongle, int cooldonw, long now);
 void	coder_request(t_coder *coder);
