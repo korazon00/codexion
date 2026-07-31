@@ -66,17 +66,23 @@ void	init_args(char **argv, t_args *p)
 
 int	print_errors(char *msg, int i)
 {
-	char *arg_names[] = {
-	"number_of_coders", "time_to_burnout", "time_to_compile",
-	"time_to_debug", "time_to_refactor", "number_of_compiles_required",
-	"dongle_cooldown"
-};
+	char	*arg_names[8];
+
+	arg_names[0] = "error";
+	arg_names[1] = "number_of_coders";
+	arg_names[2] = "time_to_burnout";
+	arg_names[3] = "time_to_compile";
+	arg_names[4] = "time_to_debug";
+	arg_names[5] = "time_to_refactor";
+	arg_names[6] = "number_of_compiles_required";
+	arg_names[7] = "dongle_cooldown";
 	if (i)
-		fprintf(stderr, "Error: %s (go \"%s\")\n", msg, arg_names[i]);
+		fprintf(stderr, "Error: the %s %s\n", arg_names[i], msg);
 	else
 		fprintf(stderr, "Error: %s\n", msg);
 	return (1);
 }
+
 int	parse_args(int argc, char **argv, t_args *p)
 {
 	int	i;
@@ -88,15 +94,15 @@ int	parse_args(int argc, char **argv, t_args *p)
 	while (i <= 7)
 	{
 		if (!is_positive(argv[i]))
-			if (print_errors("must be a positive integer", i - 1))
+			if (print_errors("must be a positive integer", i))
 				return (0);
 		if (check_atoi(argv[i]) < 0)
-			if (print_errors("value overflows int", i - 1))
-			return (0);
+			if (print_errors("is larger than INT_MAX", i))
+				return (0);
 		i++;
 	}
 	if (strcmp(argv[8], "fifo") != 0 && strcmp(argv[8], "edf") != 0)
-		if(print_errors("Error: scheduler must be \"fifo\" or \"edf\"", NULL))
+		if (print_errors("scheduler must be \"fifo\" or \"edf\"", 0))
 			return (0);
 	init_args(argv, p);
 	return (1);

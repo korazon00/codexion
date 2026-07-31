@@ -12,7 +12,7 @@
 
 #include "codexion.h"
 
-static void	is_odd(t_sim *sim, t_coder *coder)
+void	is_odd(t_sim *sim, t_coder *coder)
 {
 	long	time_to_sleep;
 
@@ -23,14 +23,14 @@ static void	is_odd(t_sim *sim, t_coder *coder)
 	}
 }
 
-static int one_coder(t_sim *sim, t_coder *coder)
+int	one_coder(t_sim *sim, t_coder *coder)
 {
-		log_state(sim, coder->id, "has taken a dongle");
-		custum_usleep(sim, sim->args.time_to_burnout);
-		return (1);
+	log_state(sim, coder->id, "has taken a dongle");
+	custum_usleep(sim, sim->args.time_to_burnout);
+	return (1);
 }
 
-void *coder_routine(void *arg)
+void	*coder_routine(void *arg)
 {
 	t_coder	*coder;
 	t_sim	*sim;
@@ -40,7 +40,7 @@ void *coder_routine(void *arg)
 	waiting_station(sim, coder);
 	if (sim->args.number_of_coders == 1)
 		if (one_coder(sim, coder))
-			return(NULL);
+			return (NULL);
 	is_odd(sim, coder);
 	while (!should_stop(sim))
 	{
@@ -58,7 +58,7 @@ void *coder_routine(void *arg)
 	return (NULL);
 }
 
-int init_coders(t_sim *sim)
+int	init_coders(t_sim *sim)
 {
 	int	i;
 
@@ -73,16 +73,15 @@ int init_coders(t_sim *sim)
 		sim->coders[i].left = sim->coders[i].id - 1;
 		sim->coders[i].right = sim->coders[i].id % sim->args.number_of_coders;
 		pthread_mutex_init(&sim->coders[i].coder_mtx, NULL);
-
 		if (pthread_create(
-			&sim->coders[i].thread,
-			NULL,
-			coder_routine,
-			&sim->coders[i]) != 0)
+				&sim->coders[i].thread,
+				NULL,
+				coder_routine,
+				&sim->coders[i]) != 0)
 			return (0);
 		i++;
 	}
-		return (1);
+	return (1);
 }
 
 int	join_threads(t_sim	*sim)

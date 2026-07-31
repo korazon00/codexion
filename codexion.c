@@ -26,11 +26,10 @@ static int	init_all(t_sim *sim)
 		return (0);
 	if (!init_coders(sim))
 		return (0);
-
 	return (1);
 }
 
-static void destroy_all(t_sim *sim)
+void	destroy_all(t_sim *sim)
 {
 	pthread_mutex_destroy(&sim->sim_mtx);
 	pthread_mutex_destroy(&sim->print_mtx);
@@ -39,7 +38,7 @@ static void destroy_all(t_sim *sim)
 	destroy_mtx(sim);
 }
 
-static void free_all(t_sim *sim)
+void	free_all(t_sim *sim)
 {
 	int	i;
 
