@@ -12,10 +12,6 @@
 
 #include "codexion.h"
 
-//parent == (i - 1)// 2
-// left == i * 2 + 1
-// right == i * 2 + 2
-
 static int	higher_priority(t_coder *a, t_coder *b)
 {
 	if (a->priority < b->priority)

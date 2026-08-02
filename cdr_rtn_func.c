@@ -36,9 +36,10 @@ void	refactoring(t_sim *sim, t_coder *coder)
 
 void	waiting_station(t_sim *sim, t_coder *coder)
 {
-	pthread_mutex_lock(&coder->coder_mtx);
-	pthread_cond_wait(&sim->cond, &coder->coder_mtx);
-	pthread_mutex_unlock(&coder->coder_mtx);
+	(void)coder;
+	pthread_mutex_lock(&sim->sim_mtx);
+	pthread_cond_wait(&sim->cond, &sim->sim_mtx);
+	pthread_mutex_unlock(&sim->sim_mtx);
 }
 
 void	release_dongles_if_not_avail(t_sim *sim, t_coder *coder)

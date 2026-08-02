@@ -76,7 +76,9 @@ void	*monitor_routine(void *arg)
 
 	sim = (t_sim *)arg;
 	sim->start_time = get_time_ms();
+	pthread_mutex_lock(&sim->sim_mtx);
 	pthread_cond_broadcast(&sim->cond);
+	pthread_mutex_unlock(&sim->sim_mtx);
 	while (!sim->stop)
 	{
 		i = 0;
@@ -94,6 +96,8 @@ void	*monitor_routine(void *arg)
 				return (NULL);
 		custum_usleep(sim, 1);
 	}
+	pthread_mutex_lock(&sim->sim_mtx);
 	pthread_cond_broadcast(&sim->cond);
+	pthread_mutex_unlock(&sim->sim_mtx);
 	return (NULL);
 }

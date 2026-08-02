@@ -85,9 +85,7 @@ AI assisted with:
 - **Deadlock prevention (Coffman's conditions)**: a coder only takes a dongle if
   it can take *both* required dongles atomically. If only one of the two is
   available, neither is taken — this removes the classic "hold one, wait for the
-  other" hold-and-wait pattern that causes circular-wait deadlocks (the
-  Dining Philosophers failure mode), since no coder ever holds a partial set of
-  resources while blocked.
+  other" hold-and-wait pattern that causes circular-wait deadlocks, since no coder ever holds a partial set of resources while blocked.
 - **Starvation prevention**: dongle access is arbitrated through a custom binary
   min-heap acting as a priority queue. Under `fifo`, requests are served in
   arrival order. Under `edf`, the coder with the earliest burnout deadline
@@ -123,12 +121,6 @@ AI assisted with:
   coder waiting for a dongle sleeps until either it's woken by a
   `pthread_cond_broadcast` (fired whenever any dongle is released) or its
   cooldown-based deadline passes, instead of busy-polling.
-- **Per-dongle state, not per-dongle locking, as the source of truth**: dongle
-  possession is represented explicitly by the `is_available` flag under
-  `sim_mtx`, rather than by holding a dongle's own mutex for the duration of a
-  compile — this avoids the lock-order inversion that arises when a thread
-  holding a resource-specific lock also needs to re-acquire the global lock
-  (e.g. to check the stop flag) while waiting.
 - **Race-condition example prevented**: without `coder_mtx`, the monitor thread
   reading `last_comp_start` could observe a half-written value while a coder
   thread was updating it at the start of a new compile; with `coder_mtx` held

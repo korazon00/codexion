@@ -81,6 +81,7 @@ int	init_coders(t_sim *sim)
 			return (0);
 		i++;
 	}
+	
 	return (1);
 }
 

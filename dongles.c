@@ -42,6 +42,7 @@ int	init_dongles(t_sim *sim)
 			return (0);
 		}
 		init_dongles_2(sim, i);
+		//protection
 		pthread_mutex_init(&sim->dongles[i].mutex, NULL);
 		i++;
 	}
@@ -76,7 +77,7 @@ void	dongles_request(t_coder *coder)
 	init_my_dongles(coder, &first, &second);
 	pthread_mutex_lock(&sim->sim_mtx);
 	coder_request(coder);
-	while (1)
+	while (!sim->stop)
 	{
 		now = get_time_ms();
 		if (sim->dongles[first].waiters->waiters[0] == coder \
@@ -91,6 +92,7 @@ void	dongles_request(t_coder *coder)
 		}
 		coder_waiting(sim, coder);
 	}
+	pthread_mutex_unlock(&sim->sim_mtx);
 }
 
 void	release_dongles(t_coder *coder)

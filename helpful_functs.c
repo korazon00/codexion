@@ -53,12 +53,12 @@ void	coder_waiting(t_sim *sim, t_coder *coder)
 	struct timespec	ts;
 	long			wake_up;
 
-	pthread_mutex_lock(&coder->coder_mtx);
+	// pthread_mutex_lock(&coder->coder_mtx);
 	wake_up = coder->last_comp_start + sim->args.dongle_cooldown;
 	ts.tv_sec = wake_up / 1000;
 	ts.tv_nsec = (wake_up % 1000) * 1000000L;
-	pthread_mutex_unlock(&coder->coder_mtx);
 	pthread_cond_timedwait(&sim->cond, &sim->sim_mtx, &ts);
+	// pthread_mutex_unlock(&coder->sim->sim_mtx);
 }
 
 void	coder_request(t_coder *coder)
