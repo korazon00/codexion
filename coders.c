@@ -47,7 +47,7 @@ void	*coder_routine(void *arg)
 		dongles_request(coder);
 		if (should_stop(sim))
 		{
-			release_dongles_if_not_avail(sim, coder);
+			release_dongles(coder);
 			return (NULL);
 		}
 		compiling(sim, coder);

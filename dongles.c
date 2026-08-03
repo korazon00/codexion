@@ -91,9 +91,24 @@ void	dongles_request(t_coder *coder)
 			}
 		}
 		coder_waiting(sim, coder);
+		// custum_usleep(sim, 1);
 	}
 	pthread_mutex_unlock(&sim->sim_mtx);
 }
+
+// void	release_dongles(t_coder *coder)
+// {
+// 	t_sim	*sim;
+
+// 	sim = coder->sim;
+// 	pthread_mutex_lock(&sim->sim_mtx);
+// 	sim->dongles[coder->left].last_released = get_time_ms();
+// 	sim->dongles[coder->left].is_available = 1;
+// 	sim->dongles[coder->right].last_released = get_time_ms();
+// 	sim->dongles[coder->right].is_available = 1;
+// 	pthread_cond_broadcast(&sim->cond);
+// 	pthread_mutex_unlock(&sim->sim_mtx);
+// }
 
 void	release_dongles(t_coder *coder)
 {
@@ -101,10 +116,14 @@ void	release_dongles(t_coder *coder)
 
 	sim = coder->sim;
 	pthread_mutex_lock(&sim->sim_mtx);
-	sim->dongles[coder->left].last_released = get_time_ms();
-	sim->dongles[coder->left].is_available = 1;
-	sim->dongles[coder->right].last_released = get_time_ms();
-	sim->dongles[coder->right].is_available = 1;
-	pthread_cond_broadcast(&sim->cond);
+	if (!sim->dongles[coder->left].is_available
+		&& !sim->dongles[coder->right].is_available)
+	{
+		sim->dongles[coder->left].last_released = get_time_ms();
+		sim->dongles[coder->left].is_available = 1;
+		sim->dongles[coder->right].last_released = get_time_ms();
+		sim->dongles[coder->right].is_available = 1;
+		pthread_cond_broadcast(&sim->cond);
+	}
 	pthread_mutex_unlock(&sim->sim_mtx);
 }

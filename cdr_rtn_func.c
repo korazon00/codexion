@@ -42,9 +42,9 @@ void	waiting_station(t_sim *sim, t_coder *coder)
 	pthread_mutex_unlock(&sim->sim_mtx);
 }
 
-void	release_dongles_if_not_avail(t_sim *sim, t_coder *coder)
-{
-	if (!sim->dongles[coder->left].is_available && \
-!sim->dongles[coder->right].is_available)
-		release_dongles(coder);
-}
+// void	release_dongles_if_not_avail(t_sim *sim, t_coder *coder)
+// {
+// 	if (!sim->dongles[coder->left].is_available && 
+// !sim->dongles[coder->right].is_available)
+// 		release_dongles(coder);
+// }
