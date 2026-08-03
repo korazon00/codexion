@@ -12,11 +12,14 @@
 
 #include "codexion.h"
 
-void	init_dongles_2(t_sim *sim, int i)
+int	init_dongles_2(t_sim *sim, int i)
 {
 	sim->dongles[i].waiters->size = 0;
 	sim->dongles[i].last_released = 0;
 	sim->dongles[i].is_available = 1;
+	if (pthread_mutex_init(&sim->dongles[i].mutex, NULL))
+		return (0);
+	return (1);
 }
 
 int	init_dongles(t_sim *sim)
@@ -41,9 +44,8 @@ int	init_dongles(t_sim *sim)
 			sim->dongles[i].waiters = NULL;
 			return (0);
 		}
-		init_dongles_2(sim, i);
-		//protection
-		pthread_mutex_init(&sim->dongles[i].mutex, NULL);
+		if (!init_dongles_2(sim, i))
+			return (1);
 		i++;
 	}
 	return (1);
@@ -91,24 +93,9 @@ void	dongles_request(t_coder *coder)
 			}
 		}
 		coder_waiting(sim, coder);
-		// custum_usleep(sim, 1);
 	}
 	pthread_mutex_unlock(&sim->sim_mtx);
 }
-
-// void	release_dongles(t_coder *coder)
-// {
-// 	t_sim	*sim;
-
-// 	sim = coder->sim;
-// 	pthread_mutex_lock(&sim->sim_mtx);
-// 	sim->dongles[coder->left].last_released = get_time_ms();
-// 	sim->dongles[coder->left].is_available = 1;
-// 	sim->dongles[coder->right].last_released = get_time_ms();
-// 	sim->dongles[coder->right].is_available = 1;
-// 	pthread_cond_broadcast(&sim->cond);
-// 	pthread_mutex_unlock(&sim->sim_mtx);
-// }
 
 void	release_dongles(t_coder *coder)
 {

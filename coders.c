@@ -41,6 +41,8 @@ void	*coder_routine(void *arg)
 	if (sim->args.number_of_coders == 1)
 		if (one_coder(sim, coder))
 			return (NULL);
+	if (sim->args.number_of_compiles_required == 0)
+		return (NULL);
 	is_odd(sim, coder);
 	while (!should_stop(sim))
 	{
@@ -50,10 +52,7 @@ void	*coder_routine(void *arg)
 			release_dongles(coder);
 			return (NULL);
 		}
-		compiling(sim, coder);
-		release_dongles(coder);
-		debuging(sim, coder);
-		refactoring(sim, coder);
+		life_of_coder(sim, coder);
 	}
 	return (NULL);
 }
@@ -81,7 +80,6 @@ int	init_coders(t_sim *sim)
 			return (0);
 		i++;
 	}
-	
 	return (1);
 }
 

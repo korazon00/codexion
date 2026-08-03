@@ -75,7 +75,6 @@ typedef struct s_simulation
 	pthread_t		monitor;
 }					t_sim;
 
-
 int		parse_args(int argc, char **argv, t_args *p);
 int		check_atoi(char *s);
 int		is_positive(char *s);
@@ -100,10 +99,11 @@ void	compiling(t_sim *sim, t_coder *coder);
 void	debuging(t_sim *sim, t_coder *coder);
 void	refactoring(t_sim *sim, t_coder *coder);
 void	waiting_station(t_sim *sim, t_coder *coder);
-void	release_dongles_if_not_avail(t_sim *sim, t_coder *coder);
 void	destroy_mtx(t_sim *sim);
 int		dongle_available(t_dongle *dongle, int cooldonw, long now);
 void	coder_request(t_coder *coder);
 void	coder_waiting(t_sim *sim, t_coder *coder);
 void	init_my_dongles(t_coder *coder, int *first, int *second);
+void	broadcast(t_sim *sim);
+void	life_of_coder(t_sim *sim, t_coder *coder);
 #endif
