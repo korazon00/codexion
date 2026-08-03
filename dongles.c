@@ -41,7 +41,6 @@ int	init_dongles(t_sim *sim)
 				free(sim->dongles[i].waiters->waiters);
 				free(sim->dongles[i].waiters);
 			}
-			sim->dongles[i].waiters = NULL;
 			return (0);
 		}
 		if (!init_dongles_2(sim, i))

@@ -19,7 +19,11 @@ int	is_positive(char *s)
 	if (!s || s[0] == '\0')
 		return (0);
 	if (s[0] == '+')
+	{
+		if (strlen(s) == 1)
+		return (0);
 		i = 1;
+	}
 	else
 		i = 0;
 	while (s[i])
