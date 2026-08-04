@@ -36,7 +36,7 @@ Other available rules: `clean`, `fclean`, `re`.
 
 ```bash
 ./codexion number_of_coders time_to_burnout time_to_compile time_to_debug \
-           time_to_refactor number_of_compiles_required dongle_cooldown scheduler
+           time_to_refactor number_of_compiles_required dongle_coldown scheduler
 ```
 
 | Argument                      | Description                                                              |
@@ -47,7 +47,7 @@ Other available rules: `clean`, `fclean`, `re`.
 | `time_to_debug`                 | Time (ms) spent debugging                                            |
 | `time_to_refactor`              | Time (ms) spent refactoring                                          |
 | `number_of_compiles_required`   | Simulation stops once every coder has compiled this many times       |
-| `dongle_cooldown`               | Time (ms) a dongle stays unavailable after being released            |
+| `dongle_coldown`               | Time (ms) a dongle stays unavailable after being released            |
 | `scheduler`                     | `fifo` or `edf` — arbitration policy when several coders want a dongle|
 
 Example:
@@ -92,8 +92,8 @@ AI assisted with:
   (`last_compile_start + time_to_burnout`) is served first, with `compile_count`
   and then coder `id` used as deterministic tie-breakers so equal deadlines never
   produce ambiguous ordering.
-- **Cooldown handling**: each dongle tracks its own `last_released` timestamp.
-  A dongle is only considered available once `dongle_cooldown` milliseconds have
+- **coldown handling**: each dongle tracks its own `last_released` timestamp.
+  A dongle is only considered available once `dongle_coldown` milliseconds have
   passed since it was last released, checked before every acquisition attempt.
 - **Precise burnout detection**: a dedicated monitor thread polls every coder's
   `last_comp_start` at short intervals and stops the simulation as soon as any
@@ -120,7 +120,7 @@ AI assisted with:
 - **`sim->cond` (condition variable)**: used with `pthread_cond_timedwait` so a
   coder waiting for a dongle sleeps until either it's woken by a
   `pthread_cond_broadcast` (fired whenever any dongle is released) or its
-  cooldown-based deadline passes, instead of busy-polling.
+  coldown-based deadline passes, instead of busy-polling.
 - **Race-condition example prevented**: without `coder_mtx`, the monitor thread
   reading `last_comp_start` could observe a half-written value while a coder
   thread was updating it at the start of a new compile; with `coder_mtx` held

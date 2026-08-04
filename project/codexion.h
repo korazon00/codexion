@@ -28,7 +28,7 @@ typedef struct s_args
 	int	time_to_debug;
 	int	time_to_refactor;
 	int	number_of_compiles_required;
-	int	dongle_cooldown;
+	int	dongle_coldown;
 	int	scheduler;
 	int	number_of_dongles;
 }	t_args;
@@ -99,7 +99,8 @@ void	debuging(t_sim *sim, t_coder *coder);
 void	refactoring(t_sim *sim, t_coder *coder);
 void	waiting_station(t_sim *sim);
 void	destroy_mtx(t_sim *sim);
-int		dongle_available(t_dongle *dongle, t_coder *coder, int cooldonw, long now);
+int		dongle_available(t_dongle *dongle, \
+t_coder *coder, int coldown, long now);
 void	coder_request(t_coder *coder);
 void	coder_waiting(t_sim *sim);
 void	init_my_dongles(t_coder *coder, int *first, int *second);

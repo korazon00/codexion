@@ -75,14 +75,15 @@ void	dongles_request(t_coder *coder)
 
 	sim = coder->sim;
 	init_my_dongles(coder, &first, &second);
-	// pthread_mutex_lock(&sim->sim_mtx);
 	coder_request(coder);
 	while (!sim->stop)
 	{
 		now = get_time_ms();
-		if (dongle_available(&sim->dongles[first], coder, sim->args.dongle_cooldown, now))
+		if (dongle_available(&sim->dongles[first],
+				coder, sim->args.dongle_coldown, now))
 		{
-			if (dongle_available(&sim->dongles[second], coder, sim->args.dongle_cooldown, now))
+			if (dongle_available(&sim->dongles[second],
+					coder, sim->args.dongle_coldown, now))
 			{
 				take_dongles(sim, coder, first, second);
 				return ;
@@ -90,7 +91,6 @@ void	dongles_request(t_coder *coder)
 		}
 		coder_waiting(sim);
 	}
-	// pthread_mutex_unlock(&sim->sim_mtx);
 }
 
 void	release_dongles(t_coder *coder)

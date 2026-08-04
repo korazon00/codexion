@@ -64,7 +64,7 @@ void	init_args(char **argv, t_args *p)
 	p->time_to_debug = atoi(argv[4]);
 	p->time_to_refactor = atoi(argv[5]);
 	p->number_of_compiles_required = atoi(argv[6]);
-	p->dongle_cooldown = atoi(argv[7]);
+	p->dongle_coldown = atoi(argv[7]);
 	p->scheduler = (strcmp("fifo", argv[8]) == 0);
 }
 
@@ -79,7 +79,7 @@ int	print_errors(char *msg, int i)
 	arg_names[4] = "time_to_debug";
 	arg_names[5] = "time_to_refactor";
 	arg_names[6] = "number_of_compiles_required";
-	arg_names[7] = "dongle_cooldown";
+	arg_names[7] = "dongle_coldown";
 	if (i)
 		fprintf(stderr, "Error: the %s %s\n", arg_names[i], msg);
 	else

@@ -16,7 +16,7 @@ void	is_odd(t_sim *sim, t_coder *coder)
 {
 	long	time_to_sleep;
 
-	time_to_sleep = (sim->args.time_to_compile + sim->args.dongle_cooldown) / 2;
+	time_to_sleep = (sim->args.time_to_compile + sim->args.dongle_coldown) / 2;
 	if (coder->id % 2 == 0)
 	{
 		custum_usleep(sim, time_to_sleep);

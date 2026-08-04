@@ -25,7 +25,7 @@ void	destroy_mtx(t_sim *sim)
 	}
 }
 
-int	dongle_available(t_dongle *dongle, t_coder *coder, int cooldonw, long now)
+int	dongle_available(t_dongle *dongle, t_coder *coder, int coldown, long now)
 {
 	pthread_mutex_lock(&dongle->mutex);
 	if (dongle->waiters->waiters[0] != coder)
@@ -38,7 +38,7 @@ int	dongle_available(t_dongle *dongle, t_coder *coder, int cooldonw, long now)
 		pthread_mutex_unlock(&dongle->mutex);
 		return (0);
 	}
-	if (now - dongle->last_released < cooldonw)
+	if (now - dongle->last_released < coldown)
 	{
 		pthread_mutex_unlock(&dongle->mutex);
 		return (0);
@@ -63,9 +63,7 @@ void	init_my_dongles(t_coder *coder, int *first, int *second)
 
 void	coder_waiting(t_sim *sim)
 {
-	// pthread_mutex_unlock(&sim->sim_mtx);
 	custum_usleep(sim, 1);
-	// pthread_mutex_lock(&sim->sim_mtx);
 }
 
 void	coder_request(t_coder *coder)
