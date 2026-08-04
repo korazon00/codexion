@@ -18,8 +18,6 @@ static int	init_all(t_sim *sim)
 		return (0);
 	if (pthread_mutex_init(&sim->print_mtx, NULL))
 		return (0);
-	if (pthread_mutex_init(&sim->monitor_mtx, NULL))
-		return (0);
 	if (pthread_cond_init(&sim->cond, NULL))
 		return (0);
 	if (!init_dongles(sim))
@@ -33,7 +31,6 @@ void	destroy_all(t_sim *sim)
 {
 	pthread_mutex_destroy(&sim->sim_mtx);
 	pthread_mutex_destroy(&sim->print_mtx);
-	pthread_mutex_destroy(&sim->monitor_mtx);
 	pthread_cond_destroy(&sim->cond);
 	destroy_mtx(sim);
 }

@@ -71,7 +71,6 @@ typedef struct s_simulation
 	pthread_cond_t	cond;
 	pthread_mutex_t	sim_mtx;
 	pthread_mutex_t	print_mtx;
-	pthread_mutex_t	monitor_mtx;
 	pthread_t		monitor;
 }					t_sim;
 
@@ -98,12 +97,13 @@ void	swap(t_coder **a, t_coder **b);
 void	compiling(t_sim *sim, t_coder *coder);
 void	debuging(t_sim *sim, t_coder *coder);
 void	refactoring(t_sim *sim, t_coder *coder);
-void	waiting_station(t_sim *sim, t_coder *coder);
+void	waiting_station(t_sim *sim);
 void	destroy_mtx(t_sim *sim);
-int		dongle_available(t_dongle *dongle, int cooldonw, long now);
+int		dongle_available(t_dongle *dongle, t_coder *coder, int cooldonw, long now);
 void	coder_request(t_coder *coder);
-void	coder_waiting(t_sim *sim, t_coder *coder);
+void	coder_waiting(t_sim *sim);
 void	init_my_dongles(t_coder *coder, int *first, int *second);
 void	broadcast(t_sim *sim);
 void	life_of_coder(t_sim *sim, t_coder *coder);
+int		create_coders(t_sim *sim, int i);
 #endif

@@ -34,9 +34,8 @@ void	refactoring(t_sim *sim, t_coder *coder)
 	custum_usleep(sim, sim->args.time_to_refactor);
 }
 
-void	waiting_station(t_sim *sim, t_coder *coder)
+void	waiting_station(t_sim *sim)
 {
-	(void)coder;
 	pthread_mutex_lock(&sim->sim_mtx);
 	pthread_cond_wait(&sim->cond, &sim->sim_mtx);
 	pthread_mutex_unlock(&sim->sim_mtx);

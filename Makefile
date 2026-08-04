@@ -4,7 +4,7 @@ CC = cc
 
 CFLAGS = -Wall -Wextra -Werror -pthread
 
-SRC = codexion.c coders.c dongles.c ft_time.c heap.c monitor.c parsing.c cdr_rtn_func.c helpful_functs.c life_of_coder.c
+SRC = project/codexion.c project/coders.c project/dongles.c project/ft_time.c project/heap.c project/monitor.c project/parsing.c project/cdr_rtn_func.c project/helpful_functs.c project/life_of_coder.c
 
 OBJ = $(SRC:%.c=%.o)
 
@@ -13,7 +13,7 @@ all : $(NAME)
 $(NAME) : $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
 
-%.o: %.c codexion.h
+%.o: %.c project/codexion.h
 		$(CC) $(CFLAGS) -c $< -o $@
 
 clean:

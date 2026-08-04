@@ -37,11 +37,12 @@ void	*coder_routine(void *arg)
 
 	coder = (t_coder *)arg;
 	sim = coder->sim;
-	waiting_station(sim, coder);
+	waiting_station(sim);
 	if (sim->args.number_of_coders == 1)
 		if (one_coder(sim, coder))
 			return (NULL);
-	if (sim->args.number_of_compiles_required == 0)
+	if (sim->args.number_of_compiles_required == 0 || \
+sim->args.number_of_coders == 0)
 		return (NULL);
 	is_odd(sim, coder);
 	while (!should_stop(sim))
@@ -71,12 +72,9 @@ int	init_coders(t_sim *sim)
 		sim->coders[i].last_comp_start = get_time_ms();
 		sim->coders[i].left = sim->coders[i].id - 1;
 		sim->coders[i].right = sim->coders[i].id % sim->args.number_of_coders;
-		pthread_mutex_init(&sim->coders[i].coder_mtx, NULL);
-		if (pthread_create(
-				&sim->coders[i].thread,
-				NULL,
-				coder_routine,
-				&sim->coders[i]) != 0)
+		if (pthread_mutex_init(&sim->coders[i].coder_mtx, NULL) != 0)
+			return (0);
+		if (!create_coders(sim, i))
 			return (0);
 		i++;
 	}

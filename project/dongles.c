@@ -29,13 +29,13 @@ int	init_dongles(t_sim *sim)
 	i = 0;
 	while (i < sim->args.number_of_dongles)
 	{
-		sim->dongles[i].waiters = NULL;
 		sim->dongles[i].waiters = malloc(sizeof(t_heap));
 		if (!sim->dongles[i].waiters)
 			return (0);
 		sim->dongles[i].waiters->waiters = malloc(sizeof(t_coder *) * 2);
 		if (!sim->dongles[i].waiters->waiters)
 		{
+			free(sim->dongles[i].waiters);
 			while (--i >= 0)
 			{
 				free(sim->dongles[i].waiters->waiters);
@@ -44,7 +44,7 @@ int	init_dongles(t_sim *sim)
 			return (0);
 		}
 		if (!init_dongles_2(sim, i))
-			return (1);
+			return (0);
 		i++;
 	}
 	return (1);
@@ -64,7 +64,6 @@ void	take_dongles(t_sim *sim, t_coder *coder, int first, int second)
 	log_state(sim, coder->id, "has taken a dongle");
 	pthread_mutex_unlock(&sim->dongles[first].mutex);
 	pthread_mutex_unlock(&sim->dongles[second].mutex);
-	pthread_mutex_unlock(&sim->sim_mtx);
 }
 
 void	dongles_request(t_coder *coder)
@@ -76,24 +75,22 @@ void	dongles_request(t_coder *coder)
 
 	sim = coder->sim;
 	init_my_dongles(coder, &first, &second);
-	pthread_mutex_lock(&sim->sim_mtx);
+	// pthread_mutex_lock(&sim->sim_mtx);
 	coder_request(coder);
 	while (!sim->stop)
 	{
 		now = get_time_ms();
-		if (sim->dongles[first].waiters->waiters[0] == coder \
-&& dongle_available(&sim->dongles[first], sim->args.dongle_cooldown, now))
+		if (dongle_available(&sim->dongles[first], coder, sim->args.dongle_cooldown, now))
 		{
-			if (sim->dongles[second].waiters->waiters[0] == coder \
-&& dongle_available(&sim->dongles[second], sim->args.dongle_cooldown, now))
+			if (dongle_available(&sim->dongles[second], coder, sim->args.dongle_cooldown, now))
 			{
 				take_dongles(sim, coder, first, second);
 				return ;
 			}
 		}
-		coder_waiting(sim, coder);
+		coder_waiting(sim);
 	}
-	pthread_mutex_unlock(&sim->sim_mtx);
+	// pthread_mutex_unlock(&sim->sim_mtx);
 }
 
 void	release_dongles(t_coder *coder)
@@ -109,7 +106,6 @@ void	release_dongles(t_coder *coder)
 		sim->dongles[coder->left].is_available = 1;
 		sim->dongles[coder->right].last_released = get_time_ms();
 		sim->dongles[coder->right].is_available = 1;
-		pthread_cond_broadcast(&sim->cond);
 	}
 	pthread_mutex_unlock(&sim->sim_mtx);
 }

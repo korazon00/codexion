@@ -54,7 +54,7 @@ void	push(t_coder *heap[], int *size, t_coder *coder)
 	heap[*size] = coder;
 	i = *size;
 	(*size)++;
-	while (i > 0 && higher_priority(heap[i], heap[(i -1) / 2]))
+	while (i > 0 && higher_priority(heap[i], heap[(i - 1) / 2]))
 	{
 		swap(&heap[i], &heap[(i - 1) / 2]);
 		i = (i - 1) / 2;
