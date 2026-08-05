@@ -42,11 +42,10 @@ void	free_all(t_sim *sim)
 	i = 0;
 	while (i < sim->args.number_of_dongles)
 	{
-		if (sim->dongles[i].waiters)
-		{
-			free(sim->dongles[i].waiters->waiters);
-			free(sim->dongles[i].waiters);
-		}
+		if (!sim->dongles[i].waiters)
+			break ;
+		free(sim->dongles[i].waiters->waiters);
+		free(sim->dongles[i].waiters);
 		i++;
 	}
 	free(sim->dongles);
@@ -56,7 +55,16 @@ void	free_all(t_sim *sim)
 int	codexion(t_sim *sim)
 {
 	if (pthread_create(&sim->monitor, NULL, monitor_routine, sim) != 0)
+	{
+		pthread_mutex_lock(&sim->sim_mtx);
+		sim->stop = 1;
+		pthread_mutex_unlock(&sim->sim_mtx);
+		broadcast(sim);
+		join_threads(sim);
+		destroy_all(sim);
+		free_all(sim);
 		return (0);
+	}
 	join_threads(sim);
 	pthread_join(sim->monitor, NULL);
 	destroy_all(sim);
@@ -81,7 +89,7 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	sim.args = params;
-	sim.stop = 0;
+	init_sim_flag(&sim);
 	if (!init_all(&sim))
 	{
 		destroy_all(&sim);

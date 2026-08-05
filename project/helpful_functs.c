@@ -71,9 +71,9 @@ void	coder_request(t_coder *coder)
 	t_dongle	*left;
 	t_dongle	*right;
 
-	pthread_mutex_lock(&coder->coder_mtx);
 	left = &coder->sim->dongles[coder->left];
 	right = &coder->sim->dongles[coder->right];
+	pthread_mutex_lock(&coder->coder_mtx);
 	if (coder->sim->args.scheduler == 1)
 		coder->priority = get_time_ms();
 	else
@@ -81,7 +81,11 @@ void	coder_request(t_coder *coder)
 		coder->priority = coder->last_comp_start + \
 coder->sim->args.time_to_burnout;
 	}
-	push(left->waiters->waiters, &left->waiters->size, coder);
-	push(right->waiters->waiters, &right->waiters->size, coder);
 	pthread_mutex_unlock(&coder->coder_mtx);
+	pthread_mutex_lock(&left->mutex);
+	push(left->waiters->waiters, &left->waiters->size, coder);
+	pthread_mutex_unlock(&left->mutex);
+	pthread_mutex_lock(&right->mutex);
+	push(right->waiters->waiters, &right->waiters->size, coder);
+	pthread_mutex_unlock(&right->mutex);
 }

@@ -68,6 +68,7 @@ typedef struct s_simulation
 	t_dongle		*dongles;
 	long			start_time;
 	int				stop;
+	int				is_ready;
 	pthread_cond_t	cond;
 	pthread_mutex_t	sim_mtx;
 	pthread_mutex_t	print_mtx;
@@ -107,4 +108,6 @@ void	init_my_dongles(t_coder *coder, int *first, int *second);
 void	broadcast(t_sim *sim);
 void	life_of_coder(t_sim *sim, t_coder *coder);
 int		create_coders(t_sim *sim, int i);
+void	init_sim_flag(t_sim *sim);
+void	is_ready(t_sim *sim);
 #endif

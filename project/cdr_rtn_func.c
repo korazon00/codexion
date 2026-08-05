@@ -37,7 +37,8 @@ void	refactoring(t_sim *sim, t_coder *coder)
 void	waiting_station(t_sim *sim)
 {
 	pthread_mutex_lock(&sim->sim_mtx);
-	pthread_cond_wait(&sim->cond, &sim->sim_mtx);
+	while (!sim->is_ready)
+		pthread_cond_wait(&sim->cond, &sim->sim_mtx);
 	pthread_mutex_unlock(&sim->sim_mtx);
 }
 

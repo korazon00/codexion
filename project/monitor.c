@@ -48,11 +48,12 @@ static int	is_not_burnout(t_sim *sim, t_coder *coder)
 
 void	if_is_burnout(t_sim *sim, int i)
 {
-	log_state(sim, sim->coders[i].id, "burned out");
+	pthread_mutex_lock(&sim->print_mtx);
 	pthread_mutex_lock(&sim->sim_mtx);
 	sim->stop = 1;
-	pthread_cond_broadcast(&sim->cond);
+	printf("%ld %d burned out\n", timestamp(sim), sim->coders[i].id);
 	pthread_mutex_unlock(&sim->sim_mtx);
+	pthread_mutex_unlock(&sim->print_mtx);
 }
 
 int	if_comp_finished(t_sim *sim)
@@ -70,6 +71,7 @@ void	*monitor_routine(void *arg)
 
 	sim = (t_sim *)arg;
 	sim->start_time = get_time_ms();
+	is_ready(sim);
 	broadcast(sim);
 	while (!should_stop(sim))
 	{
@@ -88,6 +90,5 @@ void	*monitor_routine(void *arg)
 				return (NULL);
 		custum_usleep(sim, 1);
 	}
-	broadcast(sim);
 	return (NULL);
 }

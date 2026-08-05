@@ -41,6 +41,7 @@ int	init_dongles(t_sim *sim)
 				free(sim->dongles[i].waiters->waiters);
 				free(sim->dongles[i].waiters);
 			}
+			sim->dongles[0].waiters = NULL;
 			return (0);
 		}
 		if (!init_dongles_2(sim, i))
@@ -76,7 +77,7 @@ void	dongles_request(t_coder *coder)
 	sim = coder->sim;
 	init_my_dongles(coder, &first, &second);
 	coder_request(coder);
-	while (!sim->stop)
+	while (!should_stop(sim))
 	{
 		now = get_time_ms();
 		if (dongle_available(&sim->dongles[first],
@@ -96,9 +97,13 @@ void	dongles_request(t_coder *coder)
 void	release_dongles(t_coder *coder)
 {
 	t_sim	*sim;
+	int		first;
+	int		second;
 
 	sim = coder->sim;
-	pthread_mutex_lock(&sim->sim_mtx);
+	init_my_dongles(coder, &first, &second);
+	pthread_mutex_lock(&sim->dongles[first].mutex);
+	pthread_mutex_lock(&sim->dongles[second].mutex);
 	if (!sim->dongles[coder->left].is_available
 		&& !sim->dongles[coder->right].is_available)
 	{
@@ -107,5 +112,6 @@ void	release_dongles(t_coder *coder)
 		sim->dongles[coder->right].last_released = get_time_ms();
 		sim->dongles[coder->right].is_available = 1;
 	}
-	pthread_mutex_unlock(&sim->sim_mtx);
+	pthread_mutex_unlock(&sim->dongles[second].mutex);
+	pthread_mutex_unlock(&sim->dongles[first].mutex);
 }

@@ -38,3 +38,16 @@ int	create_coders(t_sim *sim, int i)
 	}
 	return (1);
 }
+
+void	init_sim_flag(t_sim *sim)
+{
+	sim->stop = 0;
+	sim->is_ready = 0;
+}
+
+void	is_ready(t_sim *sim)
+{
+	pthread_mutex_lock(&sim->sim_mtx);
+	sim->is_ready = 1;
+	pthread_mutex_unlock(&sim->sim_mtx);
+}

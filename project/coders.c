@@ -41,8 +41,7 @@ void	*coder_routine(void *arg)
 	if (sim->args.number_of_coders == 1)
 		if (one_coder(sim, coder))
 			return (NULL);
-	if (sim->args.number_of_compiles_required == 0 || \
-sim->args.number_of_coders == 0)
+	if (sim->args.number_of_compiles_required == 0)
 		return (NULL);
 	is_odd(sim, coder);
 	while (!should_stop(sim))
