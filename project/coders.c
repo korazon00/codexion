@@ -12,6 +12,13 @@
 
 #include "codexion.h"
 
+int	one_coder(t_sim *sim, t_coder *coder)
+{
+	log_state(sim, coder->id, "has taken a dongle");
+	custum_usleep(sim, sim->args.time_to_burnout);
+	return (1);
+}
+
 void	is_odd(t_sim *sim, t_coder *coder)
 {
 	long	time_to_sleep;
@@ -23,12 +30,6 @@ void	is_odd(t_sim *sim, t_coder *coder)
 	}
 }
 
-int	one_coder(t_sim *sim, t_coder *coder)
-{
-	log_state(sim, coder->id, "has taken a dongle");
-	custum_usleep(sim, sim->args.time_to_burnout);
-	return (1);
-}
 
 void	*coder_routine(void *arg)
 {

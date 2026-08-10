@@ -34,6 +34,13 @@ void	refactoring(t_sim *sim, t_coder *coder)
 	custum_usleep(sim, sim->args.time_to_refactor);
 }
 
+void	broadcast(t_sim *sim)
+{
+	pthread_mutex_lock(&sim->sim_mtx);
+	pthread_cond_broadcast(&sim->cond);
+	pthread_mutex_unlock(&sim->sim_mtx);
+}
+
 void	waiting_station(t_sim *sim)
 {
 	pthread_mutex_lock(&sim->sim_mtx);
@@ -42,9 +49,3 @@ void	waiting_station(t_sim *sim)
 	pthread_mutex_unlock(&sim->sim_mtx);
 }
 
-void	broadcast(t_sim *sim)
-{
-	pthread_mutex_lock(&sim->sim_mtx);
-	pthread_cond_broadcast(&sim->cond);
-	pthread_mutex_unlock(&sim->sim_mtx);
-}
